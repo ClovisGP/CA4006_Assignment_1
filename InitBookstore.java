@@ -1,6 +1,9 @@
+import Entities.Book;
+
 public class InitBookstore {
     private static Integer nbAssistants = 2;
     private static Integer nbSections = 5;
+    private static String[] sectionList = {"fiction", "horror", "romance", "fantasy", "poetry", "history"};
     public static void main(String[] args) {
         for (String src: args) {
             String[] tmpArray = src.split("=");
@@ -12,5 +15,8 @@ public class InitBookstore {
             }
         }
         System.out.println(nbAssistants + " " + nbSections);
+        Book too = new Book(sectionList);
+        System.out.println(too.getSection());
+
     }
 }
