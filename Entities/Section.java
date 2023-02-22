@@ -43,7 +43,7 @@ public class Section {
      * @return 0 => the addition is a success. 1 => 1 a failure.
      */
     public int addBook(Book newBook) {
-        if (booksList.size() + 1 <= nbMaxBook) {
+        if (booksList.size() + 1 <= nbMaxBook || nbMaxBook == 0) {
             this.booksList.add(newBook);
             return 0;
         }
