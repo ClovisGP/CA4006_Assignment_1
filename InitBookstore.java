@@ -1,9 +1,24 @@
 import Entities.Book;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 public class InitBookstore {
     private static Integer nbAssistants = 2;
-    private static Integer nbSections = 5;
-    private static String[] sectionList = {"fiction", "horror", "romance", "fantasy", "poetry", "history"};
+    private static Integer nbSections = 6;
+    private static ArrayList<String> sectionList = new ArrayList<String>(Arrays.asList("fiction", "horror", "romance", "fantasy", "poetry", "history"));
+    
+    private static void bookSectionManagement() {
+        if (nbSections < 6) {
+            while (sectionList.size() > nbSections) {
+                sectionList.remove(sectionList.size() - 1);
+            }
+        } else if (nbSections > 6) {
+            for (int index = 1; sectionList.size() < nbSections; index++) {
+                sectionList.add("Other Category " + index);
+            }
+        }
+    }
     public static void main(String[] args) {
         for (String src: args) {
             String[] tmpArray = src.split("=");
@@ -14,9 +29,9 @@ public class InitBookstore {
                 nbSections = (Integer.parseInt(tmpArray[1]) != 0) ? Integer.parseInt(tmpArray[1]) : nbSections;
             }
         }
-        System.out.println(nbAssistants + " " + nbSections);
-        Book too = new Book(sectionList);
-        System.out.println(too.getSection());
-
+        bookSectionManagement();
+        for (String test : sectionList) {
+            System.out.println(test);
+        }
     }
 }
