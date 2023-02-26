@@ -35,6 +35,8 @@ public class InitBookstore {
             }
         }
         bookSectionManagement();
+
+
         for (Section current : sectionList) {
             System.out.println(current.getName());
         }
