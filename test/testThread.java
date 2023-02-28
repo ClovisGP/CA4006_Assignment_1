@@ -4,7 +4,7 @@ import java.util.concurrent.TimeUnit;
 
 public class testThread extends Thread {
     private boolean isRunning = true;
-    private tonavenir comObject = new tonavenir();
+    private EmptyVessel comObject = null;
     private timeScheduler scheduler = null;
 
     public void run() {
@@ -32,7 +32,8 @@ public class testThread extends Thread {
       this.isRunning = false;
     }
 
-    public void setScheduler(timeScheduler scheduler) {
+    public void setScheduler(timeScheduler scheduler, EmptyVessel comObject) {
       this.scheduler = scheduler;
+      this.comObject = comObject;
     }
   }

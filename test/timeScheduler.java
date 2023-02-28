@@ -12,14 +12,14 @@ public class timeScheduler extends Thread {
     private Integer countCurrent = 0;
     private Integer countMax = 0;
 
-    private tonavenir comObject = new tonavenir();
+    private EmptyVessel comObject = new EmptyVessel();
 
     public timeScheduler(ArrayList<testThread> threadList) {
         this.threadList = threadList;
         this.countMax = this.threadList.size();
 
         for (testThread currentThread : this.threadList) {
-            currentThread.setScheduler(this);
+            currentThread.setScheduler(this, comObject);
         }
     }
 

@@ -12,7 +12,6 @@ public class mainTest {
       tesList.add(new testThread());
       timeScheduler scheduler = new timeScheduler(tesList);
       scheduler.start();
-
     }
   }
     
