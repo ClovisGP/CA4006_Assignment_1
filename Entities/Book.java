@@ -1,16 +1,19 @@
 package Entities;
 
+/**
+ * The class which represents the book
+ */
 public class Book {
     private String section;
-    private String name;
     
     public Book(String sectionChoice) {
         this.section = sectionChoice;
-        this.name = "H2G2";
     }
-    public String getName() {
-        return this.name;
-    }
+
+    /**
+     * Return the target section.
+     * @Return the name of the section name
+     */
     public String getSection() {
         return this.section;
     }
