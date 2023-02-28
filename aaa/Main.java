@@ -32,7 +32,7 @@ public class Main {
         // break interval end                           -abie number
 
         // help page                                    -h
-        // run gui                                      -gui
+        // run with gui                                 -gui
         // run with default                             -d
 
         // defaults
@@ -56,7 +56,7 @@ public class Main {
         int assistantMinTimeBeforeBreak = 200;
         int assistantMaxTimeBeforeBreak = 300; // the chance of a break will be: 1 / (assistantMaxTimeBeforeBreak - assistantMinTimeBeforeBreak)
 
-        boolean startGUI = true;
+        boolean startWithGUI = true;
 
         
 
