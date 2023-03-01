@@ -1,8 +1,11 @@
 package stuff;
+
 import java.util.concurrent.*;
 
 import stuff.SynchronizedThread;
 import java.util.ArrayList;
+import Entities.Section;
+
 
 public class TimeScheduler extends Thread {
     private boolean isRunning = true;
@@ -38,7 +41,9 @@ public class TimeScheduler extends Thread {
                 if (!setupDone) {
                     this.barrier = new CyclicBarrier(this.threadList.size() + 1);
                     for (SynchronizedThread currentThread : this.threadList) {
+                        System.out.println("hello");
                         currentThread.setupThread(this, barrier);
+                        System.out.println("hello2");
                     }
                     for (SynchronizedThread currentThread : this.threadList) {
                         if (currentThread.getState() == State.NEW) {
@@ -68,6 +73,18 @@ public class TimeScheduler extends Thread {
 
     public synchronized void addWorker() {
         this.threadList.add(new Assistant());
+        this.setupDone = false;
+    }
+
+    /**
+     * Add a bookstore to the thread list
+     * @param sectionList it is the list of the section
+     * @param clientSpawnRate it is the spawn rate of a customer
+     * @param bowSpawnRate it is the spawn rate of a delivery box
+     * @param boxSpawnSize it is the size of a delivery box
+     */
+    public synchronized void addBookstore(ArrayList<Section> sectionList, Integer clientSpawnRate, Integer bowSpawnRate, Integer boxSpawnSize) {
+        this.threadList.add(new Bookstore(sectionList, clientSpawnRate, bowSpawnRate, boxSpawnSize));
         this.setupDone = false;
     }
 

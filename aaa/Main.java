@@ -6,6 +6,8 @@ import java.util.Arrays;
 
 import stuff.TimeScheduler;
 
+import Entities.Section;
+
 public class Main {
 
     public static void main(String[] args) {
@@ -58,11 +60,16 @@ public class Main {
 
         boolean startWithGUI = true;
 
-        
+        // Temporaire for testing bookstore
+        // ArrayList<Section> sectionList = new ArrayList<Section>();
+        // for (String current : sectionNames) {
+        //     sectionList.add(new Section(current, 0));
+        // }
 
         TimeScheduler scheduler = new TimeScheduler();
         scheduler.addWorker();
         scheduler.addWorker();
+        //scheduler.addBookstore(sectionList, clientSpawnRate, bowSpawnRate, boxSpawnSize);
         scheduler.start();
 
         for (int i = 0; i < 5; i++) {
