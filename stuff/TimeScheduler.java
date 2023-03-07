@@ -39,11 +39,10 @@ public class TimeScheduler extends Thread {
         try {
             while (this.isRunning) {
                 if (!setupDone) {
+                    
                     this.barrier = new CyclicBarrier(this.threadList.size() + 1);
                     for (SynchronizedThread currentThread : this.threadList) {
-                        System.out.println("hello");
                         currentThread.setupThread(this, barrier);
-                        System.out.println("hello2");
                     }
                     for (SynchronizedThread currentThread : this.threadList) {
                         if (currentThread.getState() == State.NEW) {
@@ -54,8 +53,8 @@ public class TimeScheduler extends Thread {
                 }
                 this.barrier.await();
                 this.barrier.reset();
-                System.out.println("New tick!");
                 this.ticks++;
+                System.out.println("New Tick => " + this.ticks);
 
                 TimeUnit.MILLISECONDS.sleep(this.tickMilliLength);
             }
@@ -71,20 +70,21 @@ public class TimeScheduler extends Thread {
         }
     }
 
-    public synchronized void addWorker() {
-        this.threadList.add(new Assistant());
+    public synchronized void addAssistant(ArrayList<Section> sectionList, Section deliveryArea, int assistantCarryCapacity, int assistantMoveTime, int assistantMovePenaltyPerBook, int assistantTimeInsertBookIntoSection, int assistantBreakTime, int assistantMinTimeBeforeBreak, int assistantMaxTimeBeforeBreak) {
+        this.threadList.add(new Assistant(sectionList, deliveryArea, assistantCarryCapacity, assistantMoveTime, assistantMovePenaltyPerBook, assistantTimeInsertBookIntoSection, assistantBreakTime, assistantMinTimeBeforeBreak, assistantMaxTimeBeforeBreak));
         this.setupDone = false;
     }
 
     /**
      * Add a bookstore to the thread list
      * @param sectionList it is the list of the section
+     * @param deliveryArea it is the delivery section
      * @param clientSpawnRate it is the spawn rate of a customer
      * @param bowSpawnRate it is the spawn rate of a delivery box
      * @param boxSpawnSize it is the size of a delivery box
      */
-    public synchronized void addBookstore(ArrayList<Section> sectionList, Integer clientSpawnRate, Integer bowSpawnRate, Integer boxSpawnSize) {
-        this.threadList.add(new Bookstore(sectionList, clientSpawnRate, bowSpawnRate, boxSpawnSize));
+    public synchronized void addBookstore(ArrayList<Section> sectionList, Section deliveryArea, Integer clientSpawnRate, Integer bowSpawnRate, Integer boxSpawnSize) {
+        this.threadList.add(new Bookstore(sectionList, deliveryArea, clientSpawnRate, bowSpawnRate, boxSpawnSize));
         this.setupDone = false;
     }
 

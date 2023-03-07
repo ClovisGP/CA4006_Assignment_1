@@ -16,12 +16,14 @@ public class Bookstore extends SynchronizedThread {
     private Integer clientSpawnRate;
     private Integer bowSpawnRate;
     private Integer boxSpawnSize;
+    private Section deliveryArea;
 
-    public Bookstore(ArrayList<Section> sectionList, Integer clientSpawnRate, Integer bowSpawnRate, Integer boxSpawnSize) {
+    public Bookstore(ArrayList<Section> sectionList, Section deliveryArea, Integer clientSpawnRate, Integer bowSpawnRate, Integer boxSpawnSize) {
             this.sectionList = sectionList;
             this.clientSpawnRate = clientSpawnRate;
             this.bowSpawnRate = bowSpawnRate;
             this.boxSpawnSize = boxSpawnSize;
+            this.deliveryArea = deliveryArea;
     }
 
     /**
@@ -32,7 +34,7 @@ public class Bookstore extends SynchronizedThread {
             this.lastTickCustomer = this.scheduler.getTickNumber();
 
             Integer sectionIndex = (int)Math.random() * this.sectionList.size();
-            if (sectionList.get(sectionIndex).takeBook()) {
+            if (sectionList.get(sectionIndex).takeBook() != null) {
                 System.out.println("A book is buy from the section" + this.sectionList.get(sectionIndex).getName());
             }
         }
@@ -43,22 +45,28 @@ public class Bookstore extends SynchronizedThread {
      */
     private void deliveryManagement() {
 
-        Section tmpDeliveryArea = new Section("delivery", 0);
         
         if ((this.lastTickDelivery + this.bowSpawnRate) <= this.scheduler.getTickNumber()) { //to recode for a random because on 100, I don't understand how to do it
 
             this.lastTickDelivery = this.scheduler.getTickNumber();
             for (int comp = 0; comp < this.boxSpawnSize; comp++) {
-                tmpDeliveryArea.addBook(new Book(sectionList.get((int)Math.random() * this.sectionList.size()).getName()));
+                this.deliveryArea.addBook(new Book(sectionList.get((int)Math.random() * this.sectionList.size()).getName()));
             }
 
             System.out.println("A new delivery was made");
-            System.out.println("nb book delivered => " + tmpDeliveryArea.getNbCurrentBook() + " At the ticks number => " + this.scheduler.getTickNumber());
+            System.out.println("nb book delivered => " + this.deliveryArea.getNbCurrentBook() + " At the ticks number => " + this.scheduler.getTickNumber());
         }
     }
 
     protected void doWork() {
         customerManagement();
         deliveryManagement();
+        int timeToWaste = (int)(Math.random() * 900 + 100);
+        try {
+            TimeUnit.MILLISECONDS.sleep(timeToWaste);
+        } catch (InterruptedException e) {
+            System.out.println(e);
+        }
+        System.out.println("Time wasted = " + timeToWaste);
     }
 }

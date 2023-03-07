@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import stuff.TimeScheduler;
-
+import Entities.Book;
 import Entities.Section;
 
 public class Main {
@@ -59,35 +59,39 @@ public class Main {
         int assistantMaxTimeBeforeBreak = 300; // the chance of a break will be: 1 / (assistantMaxTimeBeforeBreak - assistantMinTimeBeforeBreak)
 
         boolean startWithGUI = true;
-
+        
         // Temporaire for testing bookstore
-        // ArrayList<Section> sectionList = new ArrayList<Section>();
-        // for (String current : sectionNames) {
-        //     sectionList.add(new Section(current, 0));
-        // }
+        Section deliveryArea = new Section("Delivery", 0);
+        deliveryArea.takeBook();
+        deliveryArea.addBook(new Book("fiction"));
+        deliveryArea.addBook(new Book("horror"));
+        deliveryArea.addBook(new Book("fantasy"));
+        ArrayList<Section> sectionList = new ArrayList<Section>();
+        for (String current : sectionNames) {
+            sectionList.add(new Section(current, sectionCapacity));
+        }
 
         TimeScheduler scheduler = new TimeScheduler();
-        scheduler.addWorker();
-        scheduler.addWorker();
-        //scheduler.addBookstore(sectionList, clientSpawnRate, bowSpawnRate, boxSpawnSize);
+        scheduler.addBookstore(sectionList, deliveryArea, clientSpawnRate, /*bowSpawnRate*/10, boxSpawnSize);
+        scheduler.addAssistant(sectionList, deliveryArea, assistantCarryCapacity, assistantMoveTime, assistantMovePenaltyPerBook, assistantTimeInsertBookIntoSection, assistantBreakTime, assistantMinTimeBeforeBreak, assistantMaxTimeBeforeBreak);
         scheduler.start();
 
-        for (int i = 0; i < 5; i++) {
-            try {
-                TimeUnit.MILLISECONDS.sleep(5000);
-                scheduler.addWorker();
-            } catch (InterruptedException e) {
-                System.out.println(e);
-            }
-        }
+        // for (int i = 0; i < 5; i++) {
+        //     try {
+        //         TimeUnit.MILLISECONDS.sleep(5000);
+        //         scheduler.addWorker();
+        //     } catch (InterruptedException e) {
+        //         System.out.println(e);
+        //     }
+        // }
 
-        for (int i = 0; i < 7; i++) {
-            try {
-                TimeUnit.MILLISECONDS.sleep(5000);
-                scheduler.removeWorker();
-            } catch (InterruptedException e) {
-                System.out.println(e);
-            }
-        }
+        // for (int i = 0; i < 7; i++) {
+        //     try {
+        //         TimeUnit.MILLISECONDS.sleep(5000);
+        //         scheduler.removeWorker();
+        //     } catch (InterruptedException e) {
+        //         System.out.println(e);
+        //     }
+        // }
     }
 }

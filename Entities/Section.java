@@ -74,15 +74,16 @@ public class Section {
     }
     
     /**
-     *If there are a available book, it is removed from the section and returns true. Unless, increment the number of customer on this section and returns false.
+     *If there are a available book, it is removed from the section and returned. Unless, increment the number of customer on this section and returns null.
      */
-    public synchronized boolean takeBook() {
-        if (this.booksList.size() <= 0) {
+    public synchronized Book takeBook() {
+        if (this.booksList.size() > 0) {
+            Book targetBook = this.booksList.get(0);
             this.booksList.remove(0);
-            return true;
+            return targetBook;
         } else {
             this.nbWaitingCustomer++;
-            return false;
+            return null;
         }
     }
 }
