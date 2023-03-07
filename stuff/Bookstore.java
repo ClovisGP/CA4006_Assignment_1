@@ -67,6 +67,5 @@ public class Bookstore extends SynchronizedThread {
         } catch (InterruptedException e) {
             System.out.println(e);
         }
-        System.out.println("Time wasted = " + timeToWaste);
     }
 }

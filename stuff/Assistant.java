@@ -42,7 +42,7 @@ public class Assistant extends SynchronizedThread {
     private Book searchBookForSection(String targetSectionName) {
         if (this.currentBookList.size() == 0)
             return null;
-        for (int index = 0; this.currentBookList.get(index) != null; index++) {
+        for (int index = 0; index < this.currentBookList.size(); index++) {
             if (this.currentBookList.get(index).getSection() == targetSectionName) {
                 Book targetBook = this.currentBookList.get(index);
                 this.currentBookList.remove(index);
@@ -66,6 +66,7 @@ public class Assistant extends SynchronizedThread {
             }
         } else {
             if (this.currentPosition == "delivery") {
+                // Delivery behaviour
                 int comp = 0;
                 for (;this.currentBookList.size() < this.assistantCarryCapacity && this.deliveryArea.getNbCurrentBook() > 0; comp++) {
                     Book test = this.deliveryArea.takeBook();
@@ -76,15 +77,16 @@ public class Assistant extends SynchronizedThread {
                     moveAction(this.currentBookList.get(0).getSection());
                 }
             } else {
-                Section currentSection = searchCurrentSection(this.currentPosition);// refactoring it
-                if ((currentSection.getNbCurrentBook() + 1) <= currentSection.getNbMaxBook()) {//waste of time here
+                // Section behaviour
+                Section currentSection = searchCurrentSection(this.currentPosition);
+
+                if ((currentSection.getNbCurrentBook() + 1) <= currentSection.getNbMaxBook()) {
                     Book currentBook = searchBookForSection(this.currentPosition);
                     if (currentBook != null) {
                         currentSection.addBook(currentBook);
                         this.waitingTicks = this.assistantTimeInsertBookIntoSection - 1;
                         System.out.println("A assistant is putting a book in the " + this.currentPosition + " section");
                     } else {
-                        System.out.println(this.currentBookList.size());
                         if (this.currentBookList.size() == 0) {
                             moveAction("delivery");
                         } else {
@@ -92,7 +94,6 @@ public class Assistant extends SynchronizedThread {
                         }
                     }
                 } else {
-                    System.out.println(this.currentBookList.size());
                     if (this.currentBookList.size() == 0) {
                         moveAction("delivery");
                     } else {
