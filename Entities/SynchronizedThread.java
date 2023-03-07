@@ -1,4 +1,5 @@
-package stuff;
+package Entities;
+
 import java.util.concurrent.*;
 
 public abstract class SynchronizedThread extends Thread {

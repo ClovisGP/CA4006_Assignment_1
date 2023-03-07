@@ -1,9 +1,13 @@
-package stuff;
+package Entities;
 
-import Entities.Book;
-import Entities.Section;
 import java.util.concurrent.TimeUnit;
 import java.util.ArrayList;
+
+import Objects.Book;
+import Objects.Section;
+
+import Tools.Logger;
+
 
 public class Assistant extends SynchronizedThread {
 
@@ -20,7 +24,10 @@ public class Assistant extends SynchronizedThread {
     private String currentPosition = "delivery";
     private int waitingTicks = 0;
 
-    public Assistant(ArrayList<Section> sectionList, Section deliveryArea, int assistantCarryCapacity, int assistantMoveTime, int assistantMovePenaltyPerBook, int assistantTimeInsertBookIntoSection, int assistantBreakTime, int assistantMinTimeBeforeBreak, int assistantMaxTimeBeforeBreak) {
+    private boolean printEndAction = false;
+    private String msgEndAction;
+
+    public Assistant(ArrayList<Section> sectionList, Section deliveryArea, int assistantCarryCapacity, int assistantMoveTime, int assistantMovePenaltyPerBook, int assistantTimeInsertBookIntoSection, int assistantBreakTime, int assistantMinTimeBeforeBreak, int assistantMaxTimeBeforeBreak, int currentTick) {
         this.sectionList = sectionList;
         this.deliveryArea = deliveryArea;
         this.assistantCarryCapacity = assistantCarryCapacity;
@@ -30,7 +37,7 @@ public class Assistant extends SynchronizedThread {
         this.assistantBreakTime = assistantBreakTime;
         this.assistantMinTimeBeforeBreak = assistantMinTimeBeforeBreak;
         this.assistantMaxTimeBeforeBreak = assistantMaxTimeBeforeBreak;
-        System.out.println("A new assistant is created");
+        Logger.writeLog("T = " + currentTick + " | A new assistant is created");
     }
 
     private Section searchCurrentSection(String targetSectionName) {
@@ -55,14 +62,18 @@ public class Assistant extends SynchronizedThread {
     private void moveAction(String dest) {
         this.waitingTicks = this.assistantMoveTime + (this.assistantMovePenaltyPerBook * this.currentBookList.size()) - 1;
         this.currentPosition = dest;
-        System.out.println("A assistant go to " + dest);
+
+        Logger.writeLog("T = " + this.scheduler.getTickNumber() + " | A assistant begins to travel to " + dest);
+        this.printEndAction = true;
+        this.msgEndAction = "A assistant has arrived to " + dest;
     }
 
     protected void doWork() {
         if (this.waitingTicks > 0) {
             this.waitingTicks = this.waitingTicks - 1;
-            if (this.waitingTicks == 0) {
-                System.out.println("end wait");
+            if (this.waitingTicks == 0 && this.printEndAction) {
+                this.printEndAction = false;
+                Logger.writeLog("T = " + this.scheduler.getTickNumber() + " | " + msgEndAction);
             }
         } else {
             if (this.currentPosition == "delivery") {
@@ -73,7 +84,7 @@ public class Assistant extends SynchronizedThread {
                     this.currentBookList.add(test);
                 }
                 if (this.currentBookList.size() > 0) {
-                    System.out.println("A assistant had took " + comp + " book(s) from delivery.");
+                    Logger.writeLog("T = " + this.scheduler.getTickNumber() + " | A assistant has took " + comp + " book(s) from the delivery box.");
                     moveAction(this.currentBookList.get(0).getSection());
                 }
             } else {
@@ -85,7 +96,13 @@ public class Assistant extends SynchronizedThread {
                     if (currentBook != null) {
                         currentSection.addBook(currentBook);
                         this.waitingTicks = this.assistantTimeInsertBookIntoSection - 1;
-                        System.out.println("A assistant is putting a book in the " + this.currentPosition + " section");
+
+                        Logger.writeLog("T = " + this.scheduler.getTickNumber() + " | A assistant begins to put a book in the " + this.currentPosition + " section");
+                        if (this.waitingTicks > 0) {
+                            this.printEndAction = true;
+                            this.msgEndAction = "A assistant has finished to put a book in the " + this.currentPosition + " section";
+                        }
+
                     } else {
                         if (this.currentBookList.size() == 0) {
                             moveAction("delivery");
@@ -103,11 +120,16 @@ public class Assistant extends SynchronizedThread {
             }
         }
 
-        int timeToWaste = (int)(Math.random() * 900 + 100);
+        // To remove
         try {
-            TimeUnit.MILLISECONDS.sleep(timeToWaste);
+            TimeUnit.MILLISECONDS.sleep(500);
         } catch (InterruptedException e) {
             System.out.println(e);
         }
     }
 }
+
+/*
+Did you know the story of an optimistic guy?
+As he fell from an huge building, he said on each floor "Jusqu'ici, tout va bien" (translation: "so far all is well") while laughing.
+*/

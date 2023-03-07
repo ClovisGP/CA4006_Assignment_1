@@ -1,10 +1,13 @@
-package stuff;
+package Entities;
 
 import java.util.concurrent.*;
-
-import stuff.SynchronizedThread;
 import java.util.ArrayList;
-import Entities.Section;
+
+import Entities.SynchronizedThread;
+
+import Objects.Section;
+
+
 
 
 public class TimeScheduler extends Thread {
@@ -71,7 +74,7 @@ public class TimeScheduler extends Thread {
     }
 
     public synchronized void addAssistant(ArrayList<Section> sectionList, Section deliveryArea, int assistantCarryCapacity, int assistantMoveTime, int assistantMovePenaltyPerBook, int assistantTimeInsertBookIntoSection, int assistantBreakTime, int assistantMinTimeBeforeBreak, int assistantMaxTimeBeforeBreak) {
-        this.threadList.add(new Assistant(sectionList, deliveryArea, assistantCarryCapacity, assistantMoveTime, assistantMovePenaltyPerBook, assistantTimeInsertBookIntoSection, assistantBreakTime, assistantMinTimeBeforeBreak, assistantMaxTimeBeforeBreak));
+        this.threadList.add(new Assistant(sectionList, deliveryArea, assistantCarryCapacity, assistantMoveTime, assistantMovePenaltyPerBook, assistantTimeInsertBookIntoSection, assistantBreakTime, assistantMinTimeBeforeBreak, assistantMaxTimeBeforeBreak, this.ticks));
         this.setupDone = false;
     }
 

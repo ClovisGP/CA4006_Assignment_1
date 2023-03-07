@@ -4,7 +4,7 @@ JC = javac
 	$(JC) $(JFLAGS) $*.java
 
 CLASSES = \
-	InitBookstore.java
+	Main.java
 
 default: classes
 

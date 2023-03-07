@@ -1,12 +1,15 @@
-package aaa;
+
 
 import java.util.concurrent.TimeUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import stuff.TimeScheduler;
-import Entities.Book;
-import Entities.Section;
+import Entities.TimeScheduler;
+
+import Objects.Book;
+import Objects.Section;
+
+import Tools.Logger;
 
 public class Main {
 
@@ -59,6 +62,8 @@ public class Main {
         int assistantMaxTimeBeforeBreak = 300; // the chance of a break will be: 1 / (assistantMaxTimeBeforeBreak - assistantMinTimeBeforeBreak)
 
         boolean startWithGUI = true;
+
+        Logger.initLoggerFile();
         
         // Temporaire for testing bookstore
         Section deliveryArea = new Section("Delivery", 0);

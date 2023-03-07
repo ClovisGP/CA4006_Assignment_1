@@ -1,9 +1,12 @@
-package stuff;
+package Entities;
 
-import Entities.Book;
-import Entities.Section;
 import java.util.concurrent.TimeUnit;
 import java.util.ArrayList;
+
+import Objects.Book;
+import Objects.Section;
+
+import Tools.Logger;
 
 /**
  * This class aims to manage the deliveries and the curstomers, and all.
@@ -35,7 +38,7 @@ public class Bookstore extends SynchronizedThread {
 
             Integer sectionIndex = (int)Math.random() * this.sectionList.size();
             if (sectionList.get(sectionIndex).takeBook() != null) {
-                System.out.println("A book is buy from the section" + this.sectionList.get(sectionIndex).getName());
+                Logger.writeLog("T = " + this.scheduler.getTickNumber() + " | A book is buy from the section" + this.sectionList.get(sectionIndex).getName());
             }
         }
     }
@@ -44,26 +47,23 @@ public class Bookstore extends SynchronizedThread {
      * This function aims to generate a delivery of some books every a ticks intervale
      */
     private void deliveryManagement() {
-
-        
         if ((this.lastTickDelivery + this.bowSpawnRate) <= this.scheduler.getTickNumber()) { //to recode for a random because on 100, I don't understand how to do it
 
             this.lastTickDelivery = this.scheduler.getTickNumber();
             for (int comp = 0; comp < this.boxSpawnSize; comp++) {
                 this.deliveryArea.addBook(new Book(sectionList.get((int)Math.random() * this.sectionList.size()).getName()));
             }
-
-            System.out.println("A new delivery was made");
-            System.out.println("nb book delivered => " + this.deliveryArea.getNbCurrentBook() + " At the ticks number => " + this.scheduler.getTickNumber());
+            Logger.writeLog("T = " + this.scheduler.getTickNumber() + " | A new delivery was made. The delivery area contains now " + (this.deliveryArea.getNbCurrentBook() < 50 ? this.deliveryArea.getNbCurrentBook() : this.deliveryArea.getNbCurrentBook() + ". You should consider hiring some news assistants sir") + ".");
         }
     }
 
     protected void doWork() {
         customerManagement();
         deliveryManagement();
-        int timeToWaste = (int)(Math.random() * 900 + 100);
+
+        // To remove
         try {
-            TimeUnit.MILLISECONDS.sleep(timeToWaste);
+            TimeUnit.MILLISECONDS.sleep(500);
         } catch (InterruptedException e) {
             System.out.println(e);
         }
