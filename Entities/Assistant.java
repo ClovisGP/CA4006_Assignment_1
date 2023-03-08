@@ -70,24 +70,23 @@ public class Assistant extends SynchronizedThread {
     }
 
     private void chooseNextDestination(Boolean availableSection) {
-        if (availableSection == false) {//Don't work, if the delivery is full, he leave and go back
+        if (availableSection == false) {
             if (this.currentBookList.size() > 1 && this.destinationList.size() > 1) {
                 this.destinationList.remove(0);
                 moveAction(this.destinationList.get(0).getName());
                 this.destinationList.remove(0);
-            } else if (this.currentBookList.size() > 1) {
-                moveAction(this.currentBookList.get(1).getSection());
             } else {
                 moveAction("delivery");
             }
-        }
-        if (this.currentBookList.size() > 0 && this.destinationList.size() > 0) {
-            moveAction(this.destinationList.get(0).getName());
-            this.destinationList.remove(0);
-        } else if (this.currentBookList.size() > 0) {
-            moveAction(this.currentBookList.get(0).getSection());
         } else {
-            moveAction("delivery");
+            if (this.currentBookList.size() > 0 && this.destinationList.size() > 0) {
+                moveAction(this.destinationList.get(0).getName());
+                this.destinationList.remove(0);
+            } else if (this.currentBookList.size() > 0) {
+                moveAction(this.currentBookList.get(0).getSection());
+            } else {
+                moveAction("delivery");
+            }
         }
     }
 
