@@ -8,8 +8,6 @@ import Entities.SynchronizedThread;
 import Objects.Section;
 
 
-
-
 public class TimeScheduler extends Thread {
     private boolean isRunning = true;
     private Integer ticks = 0;
@@ -22,7 +20,7 @@ public class TimeScheduler extends Thread {
 
     public TimeScheduler() {
         this.threadList = new ArrayList<SynchronizedThread>();
-        this.tickMilliLength = 100;
+        this.tickMilliLength = 250;
     }
 
     public TimeScheduler(int minimumTickMilliLength) {

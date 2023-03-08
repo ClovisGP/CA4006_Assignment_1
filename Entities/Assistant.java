@@ -64,9 +64,6 @@ public class Assistant extends SynchronizedThread {
                 }
             }
         }
-        for (Section test: this.destinationList) {
-            System.out.println(test.getName());
-        }
     }
 
     private void chooseNextDestination(Boolean availableSection) {
@@ -172,13 +169,6 @@ public class Assistant extends SynchronizedThread {
                     chooseNextDestination(false);
                 }
             }
-        }
-
-        // To remove
-        try {
-            TimeUnit.MILLISECONDS.sleep(500);
-        } catch (InterruptedException e) {
-            System.out.println(e);
         }
     }
 }

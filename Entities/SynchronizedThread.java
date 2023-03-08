@@ -13,6 +13,13 @@ public abstract class SynchronizedThread extends Thread {
             while (this.isRunning) {
                 this.barrier.await();
                 this.doWork();
+
+                //to remove
+                try {
+                    TimeUnit.MILLISECONDS.sleep(10);
+                } catch (InterruptedException e) {
+                    System.out.println(e);
+                }
             }
         } catch (Exception e) {
             System.err.println(e);

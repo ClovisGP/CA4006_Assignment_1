@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import Entities.TimeScheduler;
+import Entities.Bookstore;
 
 import Objects.Book;
 import Objects.Section;
@@ -45,7 +46,7 @@ public class Main {
         int sectionCapacity = 10; // if it is set to 0 it will mean infinite capacity
         int startingNumberBooksSection = 1;
 
-        int tickTimeValue = 100;
+        int tickTimeValue = 500;
 
         int clientSpawnRate = 10;
 
@@ -65,19 +66,16 @@ public class Main {
 
         Logger.initLoggerFile();
         
-        // Temporaire for testing bookstore
-        Section deliveryArea = new Section("Delivery", 0);
-        deliveryArea.takeBook();
-        deliveryArea.addBook(new Book("fiction"));
-        deliveryArea.addBook(new Book("horror"));
-        deliveryArea.addBook(new Book("fantasy"));
         ArrayList<Section> sectionList = new ArrayList<Section>();
         for (String current : sectionNames) {
             sectionList.add(new Section(current, sectionCapacity));
         }
+        Section deliveryArea = new Section("Delivery", 0);
+        Bookstore.firstDelivery(deliveryArea, boxSpawnSize, sectionList);
 
-        TimeScheduler scheduler = new TimeScheduler();
-        scheduler.addBookstore(sectionList, deliveryArea, clientSpawnRate, /*bowSpawnRate*/10, boxSpawnSize);
+
+        TimeScheduler scheduler = new TimeScheduler(tickTimeValue);
+        scheduler.addBookstore(sectionList, deliveryArea, clientSpawnRate, bowSpawnRate, boxSpawnSize);
         scheduler.addAssistant(sectionList, deliveryArea, assistantCarryCapacity, assistantMoveTime, assistantMovePenaltyPerBook, assistantTimeInsertBookIntoSection, assistantBreakTime, assistantMinTimeBeforeBreak, assistantMaxTimeBeforeBreak);
         scheduler.start();
 
