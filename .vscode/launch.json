@@ -6,6 +6,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "MyFrame",
+            "request": "launch",
+            "mainClass": "test_GUI.MyFrame",
+            "projectName": "CA4006_Assignment_1_26f057a4"
+        },
+        {
+            "type": "java",
             "name": "Main",
             "request": "launch",
             "mainClass": "Main",

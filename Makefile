@@ -1,14 +1,24 @@
-JC = javac
-.SUFFIXES: .java .class
-.java.class:
-	$(JC) $(JFLAGS) $*.java
+COMPIL =	javac
 
-CLASSES = \
-	Main.java
+EXEC =		java
 
-default: classes
+EXEDIR =	./build
 
-classes: $(CLASSES:.java=.class)
+SRC =		./*.java			\
+			./Entities/*.java	\
+			./Objects/*.java	\
+			./Tools/*.java
 
-clean:
-	$(RM) *.class
+.PHONY : run compil clean all
+
+all: compil
+
+compil:
+	$(COMPIL) -d $(EXEDIR) $(SRC)
+
+# The error comes because the Makefile is interrupt, it is not from the program
+run:
+	$(EXEC) -cp $(EXEDIR) Main
+
+clean :
+	rm -f *.class $(EXEDIR)
