@@ -17,23 +17,34 @@ public class Bookstore extends SynchronizedThread {
     private Integer lastTickCustomer = 0;
     private Integer lastTickDelivery = 0;
     private Integer clientSpawnRate;
-    private Integer bowSpawnRate;
+    private Integer boxSpawnRate;
     private Integer boxSpawnSize;
     private Section deliveryArea;
 
-    public Bookstore(ArrayList<Section> sectionList, Section deliveryArea, Integer clientSpawnRate, Integer bowSpawnRate, Integer boxSpawnSize) {
+    public Bookstore(ArrayList<Section> sectionList, Section deliveryArea, Integer clientSpawnRate, Integer boxSpawnRate, Integer boxSpawnSize) {
             this.sectionList = sectionList;
             this.clientSpawnRate = clientSpawnRate;
-            this.bowSpawnRate = bowSpawnRate;
+            this.boxSpawnRate = boxSpawnRate;
             this.boxSpawnSize = boxSpawnSize;
             this.deliveryArea = deliveryArea;
+    }
+
+    /**
+     * Tell if the resssource must spawn
+     * @param averageSpawnRateInterval - the spawn rate of the ressource
+     * @return boolean - True if the ressource must spawn
+     */
+    private boolean doesItSpawn(Integer averageSpawnRateInterval) {
+        if (averageSpawnRateInterval == 0) return true;
+        if (Math.random() < (1 / (double)averageSpawnRateInterval)) return true;
+        return false;
     }
 
     /**
      * This function aims to generate a customer on a section every a ticks intervale
      */
     private void customerManagement() {
-        if ((this.lastTickCustomer + this.clientSpawnRate) <= this.scheduler.getTickNumber() + (int)(Math.random() * (this.clientSpawnRate / 3))) {
+        if (doesItSpawn(this.clientSpawnRate)) {
             this.lastTickCustomer = this.scheduler.getTickNumber();
 
             Integer sectionIndex = (int)(Math.random() * this.sectionList.size());
@@ -47,7 +58,7 @@ public class Bookstore extends SynchronizedThread {
      * This function aims to generate a delivery of some books every a ticks intervale
      */
     private void deliveryManagement() {
-        if ((this.lastTickDelivery + this.bowSpawnRate) <= (this.scheduler.getTickNumber() + Math.random() * (this.bowSpawnRate / 10))) {
+        if (doesItSpawn(this.boxSpawnRate)) {
 
             this.lastTickDelivery = this.scheduler.getTickNumber();
             for (int comp = 0; comp < this.boxSpawnSize; comp++) {

@@ -140,7 +140,7 @@ public class Assistant extends SynchronizedThread {
                     this.currentBookList.add(test);
                 }
                 if (this.currentBookList.size() > 0) {
-                    Logger.writeLog("T = " + this.scheduler.getTickNumber() + " | A assistant has took " + comp + " book(s) from the delivery box.");
+                    Logger.writeLog("T = " + this.scheduler.getTickNumber() + " | A assistant took " + comp + " book(s) from the delivery box.");
                     GPSSetUp();
                     chooseNextDestination(true);
                 }

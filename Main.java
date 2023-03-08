@@ -46,7 +46,7 @@ public class Main {
         int sectionCapacity = 10; // if it is set to 0 it will mean infinite capacity
         int startingNumberBooksSection = 1;
 
-        int tickTimeValue = 500;
+        int tickTimeValue = 10;
 
         int clientSpawnRate = 10;
 
@@ -73,9 +73,10 @@ public class Main {
         Section deliveryArea = new Section("Delivery", 0);
         Bookstore.firstDelivery(deliveryArea, boxSpawnSize, sectionList);
 
-
         TimeScheduler scheduler = new TimeScheduler(tickTimeValue);
         scheduler.addBookstore(sectionList, deliveryArea, clientSpawnRate, bowSpawnRate, boxSpawnSize);
+        scheduler.addAssistant(sectionList, deliveryArea, assistantCarryCapacity, assistantMoveTime, assistantMovePenaltyPerBook, assistantTimeInsertBookIntoSection, assistantBreakTime, assistantMinTimeBeforeBreak, assistantMaxTimeBeforeBreak);
+        scheduler.addAssistant(sectionList, deliveryArea, assistantCarryCapacity, assistantMoveTime, assistantMovePenaltyPerBook, assistantTimeInsertBookIntoSection, assistantBreakTime, assistantMinTimeBeforeBreak, assistantMaxTimeBeforeBreak);
         scheduler.addAssistant(sectionList, deliveryArea, assistantCarryCapacity, assistantMoveTime, assistantMovePenaltyPerBook, assistantTimeInsertBookIntoSection, assistantBreakTime, assistantMinTimeBeforeBreak, assistantMaxTimeBeforeBreak);
         scheduler.start();
 
