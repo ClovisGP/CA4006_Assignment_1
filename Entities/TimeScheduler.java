@@ -55,7 +55,7 @@ public class TimeScheduler extends Thread {
                 this.barrier.await();
                 this.barrier.reset();
                 this.ticks++;
-                System.out.println("New Tick => " + this.ticks);
+                //System.out.println("New Tick => " + this.ticks);
 
                 TimeUnit.MILLISECONDS.sleep(this.tickMilliLength);
             }
