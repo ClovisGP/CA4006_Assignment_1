@@ -3,6 +3,7 @@ package Objects;
 import java.util.ArrayList;
 
 import Objects.Book;
+import Tools.StatsManager;
 
 /**
  * A section is the class that represents a bookshelf.
@@ -12,16 +13,20 @@ public class Section {
     private int nbMaxBook;
     private ArrayList<Book> booksList = new ArrayList<Book>();
     private int nbWaitingCustomer = 0;
+    private StatsManager statsManager;
     public enum returnType {
         BOOKADDED,
         BOOKTOCUSTOMER,
         FULLSECTION
     }
 
-    public Section(String name, int nbMaxBook) {
+    public Section(String name, int nbMaxBook, int startingNumberOfBooks, StatsManager statsManager) {
         this.name = name;
         this.nbMaxBook = nbMaxBook;
-        this.booksList.add(new Book(name));
+        for (int i = 0; i < startingNumberOfBooks; i++) {
+            this.booksList.add(new Book(name + "-starting_book-" + Integer.toString(i)));
+        }
+        this.statsManager = statsManager;
     }
     
     /**
@@ -64,7 +69,7 @@ public class Section {
     public synchronized returnType addBook(Book newBook) {
         if (nbWaitingCustomer > 0) {
             this.nbWaitingCustomer--;
-            System.out.println("A book is buy from the section" + this.name);
+            if (this.name != "delivery") statsManager.statsAddBookBought();
             return returnType.BOOKTOCUSTOMER;
         }
         if (booksList.size() + 1 <= nbMaxBook || nbMaxBook == 0) {
@@ -79,9 +84,8 @@ public class Section {
      */
     public synchronized Book takeBook() {
         if (this.booksList.size() > 0) {
-            Book targetBook = this.booksList.get(0);
-            this.booksList.remove(0);
-            return targetBook;
+            if (this.name != "delivery") statsManager.statsAddBookBought();
+            return this.booksList.remove(0);
         } else {
             this.nbWaitingCustomer++;
             return null;

@@ -6,6 +6,20 @@
     "configurations": [
         {
             "type": "java",
+            "name": "StatsManager",
+            "request": "launch",
+            "mainClass": "StatsManager",
+            "projectName": "CA4006_1_ed360a9c"
+        },
+        {
+            "type": "java",
+            "name": "test",
+            "request": "launch",
+            "mainClass": "test",
+            "projectName": "CA4006_1_ed360a9c"
+        },
+        {
+            "type": "java",
             "name": "MyFrame",
             "request": "launch",
             "mainClass": "test_GUI.MyFrame",

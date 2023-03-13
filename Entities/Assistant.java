@@ -7,6 +7,7 @@ import Objects.Book;
 import Objects.Section;
 
 import Tools.Logger;
+import Tools.StatsManager;
 
 
 public class Assistant extends SynchronizedThread {
@@ -26,11 +27,12 @@ public class Assistant extends SynchronizedThread {
     private String currentPosition = "delivery";
     private int waitingTicks = 0;
     private ArrayList<Section> destinationList;
+    private StatsManager statsManager;
 
     private boolean printEndAction = false;
     private String msgEndAction;
 
-    public Assistant(ArrayList<Section> sectionList, Section deliveryArea, int assistantCarryCapacity, int assistantMoveTime, int assistantMovePenaltyPerBook, int assistantTimeInsertBookIntoSection, int assistantBreakTime, int assistantMinTimeBeforeBreak, int assistantMaxTimeBeforeBreak, int currentTick) {
+    public Assistant(ArrayList<Section> sectionList, Section deliveryArea, int assistantCarryCapacity, int assistantMoveTime, int assistantMovePenaltyPerBook, int assistantTimeInsertBookIntoSection, int assistantBreakTime, int assistantMinTimeBeforeBreak, int assistantMaxTimeBeforeBreak, int currentTick, StatsManager statsManager) {
         this.sectionList = sectionList;
         this.deliveryArea = deliveryArea;
         this.assistantCarryCapacity = assistantCarryCapacity;
@@ -40,7 +42,8 @@ public class Assistant extends SynchronizedThread {
         this.breakTime = assistantBreakTime;
         this.minTimeBeforeBreak = assistantMinTimeBeforeBreak;
         this.maxTimeBeforeBreak = assistantMaxTimeBeforeBreak;
-        Logger.writeLog("T = " + currentTick + " | A new assistant is created");
+        Logger.writeLog("T = " + currentTick + " | A new assistant has been created");
+        this.statsManager = statsManager;
     }
 
     /**
@@ -142,8 +145,7 @@ public class Assistant extends SynchronizedThread {
             return null;
         for (int index = 0; index < this.currentBookList.size(); index++) {
             if (this.currentBookList.get(index).getSection() == targetSectionName) {
-                Book targetBook = this.currentBookList.get(index);
-                this.currentBookList.remove(index);
+                Book targetBook = this.currentBookList.remove(index);
                 return targetBook;
             }
         }
@@ -158,24 +160,24 @@ public class Assistant extends SynchronizedThread {
         this.waitingTicks = this.assistantMoveTime + (this.assistantMovePenaltyPerBook * this.currentBookList.size()) - 1;
         this.currentPosition = dest;
 
-        Logger.writeLog("T = " + this.scheduler.getTickNumber() + " | Assistant ID = " + Thread.currentThread().threadId() + " | A assistant begins to travel to " + dest);
+        Logger.writeLog("T = " + this.scheduler.getTickNumber() + " | Assistant ID = " + Thread.currentThread().getId() + " | An assistant began to travel to " + dest);
         this.printEndAction = true;
-        this.msgEndAction = "A assistant has arrived to " + dest;
+        this.msgEndAction = "An assistant is arrived to " + dest;
     }
 
 
     /**
-     * This function cantains the behaviour of a assistant when he is in the delivery area.
+     * This function contains the behaviour of a assistant when he is in the delivery area.
      */
     private void deliveryBehaviour() {
         int comp = 0;
 
         for (;this.currentBookList.size() < this.assistantCarryCapacity && this.deliveryArea.getNbCurrentBook() > 0; comp++) {
-            Book test = this.deliveryArea.takeBook();
-            this.currentBookList.add(test);
+            Book delivery = this.deliveryArea.takeBook();
+            if (delivery != null) this.currentBookList.add(delivery);
         }
         if (this.currentBookList.size() > 0) {
-            Logger.writeLog("T = " + this.scheduler.getTickNumber() + " | Assistant ID = " + Thread.currentThread().threadId() + " | A assistant took " + comp + " book(s) from the delivery box.");
+            Logger.writeLog("T = " + this.scheduler.getTickNumber() + " | Assistant ID = " + Thread.currentThread().getId() + " | An assistant took " + comp + " book(s) from the delivery box.");
             GPSSetUp();
             chooseNextDestination(true);
         }
@@ -196,10 +198,10 @@ public class Assistant extends SynchronizedThread {
                 String logComplement = "is putting";
                 if (this.waitingTicks > 0) {
                     this.printEndAction = true;
-                    this.msgEndAction = "A assistant has finished to put a book in the " + this.currentPosition + " section";
-                    logComplement = "begins to put";
+                    this.msgEndAction = "An assistant has finished to put a book in the " + this.currentPosition + " section";
+                    logComplement = "began putting";
                 }
-                Logger.writeLog("T = " + this.scheduler.getTickNumber() + " | Assistant ID = " + Thread.currentThread().threadId() + " | A assistant " + logComplement + " a book in the " + this.currentPosition + " section");
+                Logger.writeLog("T = " + this.scheduler.getTickNumber() + " | Assistant ID = " + Thread.currentThread().getId() + " | An assistant " + logComplement + " a book in the " + this.currentPosition + " section");
 
             } else {
                 chooseNextDestination(true);
@@ -214,16 +216,16 @@ public class Assistant extends SynchronizedThread {
         if (this.ticksBeforeBreakEnd > 0) {
             this.ticksBeforeBreakEnd = this.ticksBeforeBreakEnd - 1;
             if (this.ticksBeforeBreakEnd == 0) {
-                Logger.writeLog("T = " + this.scheduler.getTickNumber() + " | Assistant ID = " + Thread.currentThread().threadId() + " | A assistant finished his break and returns work.");
+                Logger.writeLog("T = " + this.scheduler.getTickNumber() + " | Assistant ID = " + Thread.currentThread().getId() + " | An assistant finished his break and returns work.");
                 lastBreakTaken = this.scheduler.getTickNumber();
             }
         } else {
             if ((this.lastBreakTaken + minTimeBeforeBreak) <= this.scheduler.getTickNumber()) {
                 if ((this.lastBreakTaken + maxTimeBeforeBreak) <= this.scheduler.getTickNumber()) {
                     this.ticksBeforeBreakEnd = this.breakTime;
-                    Logger.writeLog("T = " + this.scheduler.getTickNumber() + " | Assistant ID = " + Thread.currentThread().threadId() + " | A assistant takes a break.");
+                    Logger.writeLog("T = " + this.scheduler.getTickNumber() + " | Assistant ID = " + Thread.currentThread().getId() + " | An assistant takes a break.");
                 } else if (doesItTakesBreak(maxTimeBeforeBreak - minTimeBeforeBreak)) {
-                    Logger.writeLog("T = " + this.scheduler.getTickNumber() + " | Assistant ID = " + Thread.currentThread().threadId() + " | A assistant takes a break.");
+                    Logger.writeLog("T = " + this.scheduler.getTickNumber() + " | Assistant ID = " + Thread.currentThread().getId() + " | An assistant takes a break.");
                     this.ticksBeforeBreakEnd = this.breakTime;
                 }
             }
@@ -233,7 +235,7 @@ public class Assistant extends SynchronizedThread {
                     this.waitingTicks = this.waitingTicks - 1;
                     if (this.waitingTicks == 0 && this.printEndAction) {
                         this.printEndAction = false;
-                        Logger.writeLog("T = " + this.scheduler.getTickNumber() + " | Assistant ID = " + Thread.currentThread().threadId() + " | " + msgEndAction);
+                        Logger.writeLog("T = " + this.scheduler.getTickNumber() + " | Assistant ID = " + Thread.currentThread().getId() + " | " + msgEndAction);
                     }
                 } else {
                     if (this.currentPosition == "delivery") {

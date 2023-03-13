@@ -7,6 +7,7 @@ import Objects.Book;
 import Objects.Section;
 
 import Tools.Logger;
+import Tools.StatsManager;
 
 /**
  * This class aims to manage the deliveries and the curstomers, and all.
@@ -20,13 +21,15 @@ public class Bookstore extends SynchronizedThread {
     private Integer boxSpawnRate;
     private Integer boxSpawnSize;
     private Section deliveryArea;
+    private StatsManager statsManager;
 
-    public Bookstore(ArrayList<Section> sectionList, Section deliveryArea, Integer clientSpawnRate, Integer boxSpawnRate, Integer boxSpawnSize) {
+    public Bookstore(ArrayList<Section> sectionList, Section deliveryArea, Integer clientSpawnRate, Integer boxSpawnRate, Integer boxSpawnSize, StatsManager statsManager) {
             this.sectionList = sectionList;
             this.clientSpawnRate = clientSpawnRate;
             this.boxSpawnRate = boxSpawnRate;
             this.boxSpawnSize = boxSpawnSize;
             this.deliveryArea = deliveryArea;
+            this.statsManager = statsManager;
     }
 
     /**
@@ -35,7 +38,7 @@ public class Bookstore extends SynchronizedThread {
      * @return boolean - True if the ressource must spawn
      */
     private boolean doesItSpawn(Integer averageSpawnRateInterval) {
-        if (averageSpawnRateInterval == 0) return true;
+        if (averageSpawnRateInterval == 0 || averageSpawnRateInterval == 1) return true;
         if (Math.random() < (1 / (double)averageSpawnRateInterval)) return true;
         return false;
     }
@@ -49,7 +52,7 @@ public class Bookstore extends SynchronizedThread {
 
             Integer sectionIndex = (int)(Math.random() * this.sectionList.size());
             if (sectionList.get(sectionIndex).takeBook() != null) {
-                Logger.writeLog("T = " + this.scheduler.getTickNumber() + " | A book is buy from the " + this.sectionList.get(sectionIndex).getName() + " sections.");
+                Logger.writeLog("T = " + this.scheduler.getTickNumber() + " | A book has been bought from the " + this.sectionList.get(sectionIndex).getName() + " section.");
             }
         }
     }
@@ -59,12 +62,11 @@ public class Bookstore extends SynchronizedThread {
      */
     private void deliveryManagement() {
         if (doesItSpawn(this.boxSpawnRate)) {
-
             this.lastTickDelivery = this.scheduler.getTickNumber();
             for (int comp = 0; comp < this.boxSpawnSize; comp++) {
                 this.deliveryArea.addBook(new Book(sectionList.get((int)(Math.random() * this.sectionList.size())).getName()));
             }
-            Logger.writeLog("T = " + this.scheduler.getTickNumber() + " | A new delivery was made. The delivery area contains now " + (this.deliveryArea.getNbCurrentBook() < 50 ? this.deliveryArea.getNbCurrentBook() : this.deliveryArea.getNbCurrentBook() + ". You should consider hiring some news assistants sir") + ".");
+            Logger.writeLog("T = " + this.scheduler.getTickNumber() + " | A new delivery was made. The delivery area contains now " + (this.deliveryArea.getNbCurrentBook() < 50 ? this.deliveryArea.getNbCurrentBook() : this.deliveryArea.getNbCurrentBook() + ". You should consider hiring some new assistants sir") + ".");
         }
     }
 
@@ -73,7 +75,7 @@ public class Bookstore extends SynchronizedThread {
      */
     public static void firstDelivery(Section deliveryArea, int boxSpawnSize, ArrayList<Section> sectionList) {
         // deliveryArea already contains a first book
-        for (int comp = 0; comp < (boxSpawnSize - 1); comp++) {
+        for (int comp = 0; comp < boxSpawnSize; comp++) {
             deliveryArea.addBook(new Book(sectionList.get((int)(Math.random() * sectionList.size())).getName()));
         }
         Logger.writeLog("T = Before openning | A new delivery was made. The delivery area contains now " + deliveryArea.getNbCurrentBook() + ".");

@@ -3,7 +3,7 @@ package Entities;
 import java.util.concurrent.*;
 
 public abstract class SynchronizedThread extends Thread {
-    private boolean isRunning = true;
+    protected boolean isRunning = true;
     private CyclicBarrier barrier;
     protected TimeScheduler scheduler;
 
@@ -30,5 +30,9 @@ public abstract class SynchronizedThread extends Thread {
     public void setupThread(TimeScheduler scheduler, CyclicBarrier barrier) {
         this.scheduler = scheduler;
         this.barrier = barrier;
+    }
+
+    protected int getTick() {
+        return scheduler.getTickNumber();
     }
 }

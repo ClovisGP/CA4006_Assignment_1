@@ -39,7 +39,7 @@ public class Logger {
      */
     public static synchronized void writeLog(String msg) {
         try {
-            System.out.println(msg);
+            //System.out.println(msg);
 
             // Write the message in the file.
             BufferedWriter logFile = new BufferedWriter(new FileWriter(fileName, true));
