@@ -23,7 +23,7 @@ public class Main {
         System.out.println("            default: -sc 20");
         System.out.println("        -ssbn number: Starting number of books in a section.");
         System.out.println("            default: -ssbn 1");
-        System.out.println("        -sg number: The number of section to generate (the names won't be pretty however....). No default value.");
+        System.out.println("        -sg number: The number of section to generate (the names won't be pretty however....). No default value. Must be more than 0.");
         System.out.println("    Ticks:");
         System.out.println("        -tv number: The minimum time a tick must take in milliseconds.");
         System.out.println("            default: -tv 10");
@@ -139,8 +139,8 @@ public class Main {
                         i++;
                         try {
                             generateSection = Integer.parseInt(args[i]);
-                            if (generateSection < 0) {
-                                System.out.println("-sg cannot be negative.");
+                            if (generateSection < 1) {
+                                System.out.println("-sg must be at least 1.");
                                 printHelp();
                             }
                         }

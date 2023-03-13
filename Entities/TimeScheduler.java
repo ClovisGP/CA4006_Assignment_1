@@ -3,8 +3,6 @@ package Entities;
 import java.util.concurrent.*;
 import java.util.ArrayList;
 
-import Entities.SynchronizedThread;
-
 import Objects.Section;
 import Tools.StatsManager;
 
