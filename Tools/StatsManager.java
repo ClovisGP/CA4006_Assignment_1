@@ -14,9 +14,10 @@ public class StatsManager extends SynchronizedThread {
     private static StatsManager single_instance = null;
     private InputStreamReader fileInputStream = new InputStreamReader(System.in);
     private BufferedReader bufferedReader = new BufferedReader(fileInputStream);
-    private ArrayList<Integer> numberOfBooksStored = new ArrayList<Integer>(Arrays.asList(0));
+    private ArrayList<Integer> booksBought = new ArrayList<Integer>(Arrays.asList(0));
+    private String command = "";
     private int tickReset = 0;
-    private int numberOfTicksToAgregate = 10;
+    private int numberOfTicksToAgregate = 100;
     private int numberOfDataPointsToKeep = 50;
 
     private StatsManager() {}
@@ -28,18 +29,19 @@ public class StatsManager extends SynchronizedThread {
         return single_instance;
     }
 
-    private static String repeatString(String s, int n) {
+    private String repeatString(String s, int n) {
         StringBuilder builder = new StringBuilder();
         for (int i = 0; i < n ; i++)
             builder.append(s);
         return builder.toString();
     }
 
-    private static void print(String msg) {
-        System.out.print(repeatString("\n", 15) + msg);
+    private void print(String msg) {
+        System.out.print("\033[H\033[2J\n" + msg + "\n" + command + "\nYou can write the new lenght in millieconds of a tick and press enter for the change to take effet.\n");
+        System.out.flush();
     }
 
-    private static String graph(ArrayList<Integer> data, int horizontalMin, int horizontalMax) {
+    private String graph(ArrayList<Integer> data, int horizontalMin, int horizontalMax, String title) {
         String chart = "";
 
         int height = 13;
@@ -70,6 +72,8 @@ public class StatsManager extends SynchronizedThread {
         strIndicatorMax = repeatString(" ", Math.max(strIndicatorMax.length(), strIndicatorMin.length()) - strIndicatorMax.length()) + strIndicatorMax;
         strIndicatorOneThird = repeatString(" ", Math.max(strIndicatorMax.length(), strIndicatorMin.length()) - strIndicatorOneThird.length()) + strIndicatorOneThird;
         strIndicatorTwoThird = repeatString(" ", Math.max(strIndicatorMax.length(), strIndicatorMin.length()) - strIndicatorTwoThird.length()) + strIndicatorTwoThird;
+        
+        int ordonateNumberLenght = Math.max(strIndicatorMax.length(), strIndicatorMin.length());
 
         ArrayList<Integer> toShow = new ArrayList<Integer>();
         if (data.size() < width) {
@@ -92,6 +96,20 @@ public class StatsManager extends SynchronizedThread {
         }
         floors.add(max);
 
+        // add title
+        int lenghtLine = ordonateNumberLenght + 1 + width;
+        int leftPadding;
+        int rightpadding;
+        if ((lenghtLine - title.length()) % 2 == 0) {
+            leftPadding = (int)((lenghtLine - title.length()) / (double) 2);
+            rightpadding = leftPadding;
+        } else {
+            leftPadding = (int)((lenghtLine - title.length() - 1) / (double) 2) + 1;
+            rightpadding = leftPadding - 1;
+        }
+        chart = repeatString(" ", leftPadding) + title + repeatString(" ", rightpadding) + "\n";
+        chart = chart + "\n";
+
         for (int i = height - 1; i > -1; i--) {
             //add vertical axis
             if (i == height - 1) chart = chart + strIndicatorMax;
@@ -105,6 +123,8 @@ public class StatsManager extends SynchronizedThread {
                 if (number == min - 1) {
                     chart = chart + " ";
                 } else if (number > floors.get(i) && number <= floors.get(i + 1)) {
+                    chart = chart + "+";
+                } else if (number == min && i == 0) {
                     chart = chart + "+";
                 } else {
                     if (j < toShow.size() - 1 && i != 0) {
@@ -124,10 +144,9 @@ public class StatsManager extends SynchronizedThread {
             chart = chart + "\n";
         }
         // add horizontal axis
-        int a = Math.max(strIndicatorMax.length(), strIndicatorMin.length());
-        chart = chart + repeatString(" ", a) + "+" + repeatString("-", width) + "\n";
-        chart = chart + repeatString(" ", a) + "|" + repeatString(" ", width - 1) + "|\n";
-        chart = chart + repeatString(" ", a) + Integer.toString(horizontalMin) + repeatString(" ", 1 + width - Integer.toString(horizontalMin).length() - Integer.toString(horizontalMax).length()) + Integer.toString(horizontalMax) + "\n";
+        chart = chart + repeatString(" ", ordonateNumberLenght) + "+" + repeatString("-", width) + "\n";
+        chart = chart + repeatString(" ", ordonateNumberLenght) + "|" + repeatString(" ", width - 1) + "|\n";
+        chart = chart + repeatString(" ", ordonateNumberLenght) + Integer.toString(horizontalMin) + repeatString(" ", 1 + width - Integer.toString(horizontalMin).length() - Integer.toString(horizontalMax).length()) + Integer.toString(horizontalMax) + "\n";
         return chart;
     }
 
@@ -142,8 +161,8 @@ public class StatsManager extends SynchronizedThread {
     }
 
     public synchronized void statsAddBookBought() {
-        int index = numberOfBooksStored.size() - 1;
-        numberOfBooksStored.set(index, numberOfBooksStored.get(index) + 1);
+        int index = booksBought.size() - 1;
+        booksBought.set(index, booksBought.get(index) + 1);
     }
 
     private void printStats() {
@@ -152,26 +171,47 @@ public class StatsManager extends SynchronizedThread {
         if (tickReset - numberOfTicksToAgregate * 50 > 0) {
             min = tickReset - numberOfTicksToAgregate * 50;
         }
-        print(graph(numberOfBooksStored, min, max));
+        ArrayList<String> graphs = new ArrayList<String>();
+        graphs.add(graph(booksBought, min, max, "Number of book sold"));
+        graphs.add(graph(booksBought, min, max, "booksBought"));
+        graphs.add(graph(booksBought, min, max, "booksBought"));
+        graphs.add(graph(booksBought, min, max, "booksBought"));
+        graphs.add(graph(booksBought, min, max, "booksBought"));
+        graphs.add(graph(booksBought, min, max, "booksBought"));
+
+        String res;
+        print(graphs.get(0));
     }
 
     private void resetStats() {
-        while (numberOfBooksStored.size() > numberOfDataPointsToKeep) numberOfBooksStored.remove(0);
-        numberOfBooksStored.add(0);
+        while (booksBought.size() > numberOfDataPointsToKeep) booksBought.remove(0);
+        booksBought.add(0);
         
     }
 
     public void doWork() {
         try {
-            String command = readOnlyWhenDone();
-            if (command.length() > 0) {
+            if (this.command.length() == 0) {
+                if (scheduler.getLenghtMillisecOfTick() == 0) {
+                    this.command = "The tick time lenght is 0, the program runs as fast as possible.";
+                } else {
+                    this.command = "A tick takes " + Integer.toString(scheduler.getLenghtMillisecOfTick()) + " milliseconds minimum.";
+                }
+            }
+            String newCommand = readOnlyWhenDone();
+            if (newCommand.length() > 0) {
                 int newTickLenght = -1;
                 try {
-                    newTickLenght =  Integer.parseInt(command);
+                    newTickLenght = Integer.parseInt(newCommand);
+                    if (newTickLenght >= 0) {
+                        if (newTickLenght == 0) {
+                            this.command = "The tick time lenght is 0, the program runs as fast as possible.";
+                        } else {
+                            this.command = "A tick takes " + Integer.toString(newTickLenght) + " milliseconds minimum.";
+                        }
+                        scheduler.setLenghtOfTick(newTickLenght);
+                    }
                 } catch (Exception e) {}
-                if (newTickLenght >= 0) {
-                    // do something with the new tick value
-                }
             }
             if (getTick() >= tickReset + numberOfTicksToAgregate) {
                 printStats();

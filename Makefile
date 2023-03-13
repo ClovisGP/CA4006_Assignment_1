@@ -19,7 +19,7 @@ all: compil
 compil:
 	$(COMPIL) -d $(EXEDIR) $(SRC)
 
-# The error comes because the Makefile is interrupt, it is not from the program
+# The error comes because the Makefile is interrupted, it is not from the program
 run:
 	$(EXEC) -cp $(EXEDIR) Main $(ARG)
 

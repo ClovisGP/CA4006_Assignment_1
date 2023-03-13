@@ -356,17 +356,17 @@ public class Main {
         StatsManager statsManager = StatsManager.getInstance();
         
         ArrayList<Section> sectionList = new ArrayList<Section>();
-        for (String current : sectionNames) {
-            sectionList.add(new Section(current, sectionCapacity, startingNumberBooksSection, statsManager));
+        for (String name : sectionNames) {
+            sectionList.add(new Section(name, sectionCapacity, startingNumberBooksSection));
         }
-        Section deliveryArea = new Section("Delivery", 0, 0, statsManager);
+        Section deliveryArea = new Section("Delivery", 0, 0);
         Bookstore.firstDelivery(deliveryArea, boxSpawnSize, sectionList);
 
         TimeScheduler scheduler = new TimeScheduler(tickTimeValue);
         scheduler.addStatsManager(statsManager);
-        scheduler.addBookstore(sectionList, deliveryArea, clientSpawnRate, bowSpawnRate, boxSpawnSize, statsManager);
+        scheduler.addBookstore(sectionList, deliveryArea, clientSpawnRate, bowSpawnRate, boxSpawnSize);
         for (int i = 0; i < assistantNumber; i++) {
-            scheduler.addAssistant(sectionList, deliveryArea, assistantCarryCapacity, assistantMoveTime, assistantMovePenaltyPerBook, assistantTimeInsertBookIntoSection, assistantBreakTime, assistantMinTimeBeforeBreak, assistantMaxTimeBeforeBreak, statsManager);
+            scheduler.addAssistant(sectionList, deliveryArea, assistantCarryCapacity, assistantMoveTime, assistantMovePenaltyPerBook, assistantTimeInsertBookIntoSection, assistantBreakTime, assistantMinTimeBeforeBreak, assistantMaxTimeBeforeBreak);
         }
         scheduler.start();
     }

@@ -6,6 +6,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "Main",
+            "request": "launch",
+            "mainClass": "Main",
+            "projectName": "CA4006_cb6fec5"
+        },
+        {
+            "type": "java",
             "name": "StatsManager",
             "request": "launch",
             "mainClass": "StatsManager",

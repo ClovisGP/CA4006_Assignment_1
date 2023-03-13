@@ -20,13 +20,13 @@ public class Section {
         FULLSECTION
     }
 
-    public Section(String name, int nbMaxBook, int startingNumberOfBooks, StatsManager statsManager) {
+    public Section(String name, int nbMaxBook, int startingNumberOfBooks) {
         this.name = name;
         this.nbMaxBook = nbMaxBook;
         for (int i = 0; i < startingNumberOfBooks; i++) {
             this.booksList.add(new Book(name + "-starting_book-" + Integer.toString(i)));
         }
-        this.statsManager = statsManager;
+        this.statsManager = StatsManager.getInstance();
     }
     
     /**

@@ -35,6 +35,14 @@ public class TimeScheduler extends Thread {
         return ticks;
     }
 
+    public Integer getLenghtMillisecOfTick() {
+        return tickMilliLength;
+    }
+
+    public void setLenghtOfTick(int tickLength) {
+        if (tickLength >= 0) this.tickMilliLength = tickLength;
+    }
+
     public void run() {
         try {
             while (this.isRunning) {
@@ -70,8 +78,8 @@ public class TimeScheduler extends Thread {
         }
     }
 
-    public synchronized void addAssistant(ArrayList<Section> sectionList, Section deliveryArea, int assistantCarryCapacity, int assistantMoveTime, int assistantMovePenaltyPerBook, int assistantTimeInsertBookIntoSection, int assistantBreakTime, int assistantMinTimeBeforeBreak, int assistantMaxTimeBeforeBreak, StatsManager statsManager) {
-        this.threadList.add(new Assistant(sectionList, deliveryArea, assistantCarryCapacity, assistantMoveTime, assistantMovePenaltyPerBook, assistantTimeInsertBookIntoSection, assistantBreakTime, assistantMinTimeBeforeBreak, assistantMaxTimeBeforeBreak, this.ticks, statsManager));
+    public synchronized void addAssistant(ArrayList<Section> sectionList, Section deliveryArea, int assistantCarryCapacity, int assistantMoveTime, int assistantMovePenaltyPerBook, int assistantTimeInsertBookIntoSection, int assistantBreakTime, int assistantMinTimeBeforeBreak, int assistantMaxTimeBeforeBreak) {
+        this.threadList.add(new Assistant(sectionList, deliveryArea, assistantCarryCapacity, assistantMoveTime, assistantMovePenaltyPerBook, assistantTimeInsertBookIntoSection, assistantBreakTime, assistantMinTimeBeforeBreak, assistantMaxTimeBeforeBreak, this.ticks));
         this.setupDone = false;
     }
 
@@ -83,8 +91,8 @@ public class TimeScheduler extends Thread {
      * @param bowSpawnRate it is the spawn rate of a delivery box
      * @param boxSpawnSize it is the size of a delivery box
      */
-    public synchronized void addBookstore(ArrayList<Section> sectionList, Section deliveryArea, Integer clientSpawnRate, Integer bowSpawnRate, Integer boxSpawnSize, StatsManager manager) {
-        this.threadList.add(new Bookstore(sectionList, deliveryArea, clientSpawnRate, bowSpawnRate, boxSpawnSize, manager));
+    public synchronized void addBookstore(ArrayList<Section> sectionList, Section deliveryArea, Integer clientSpawnRate, Integer bowSpawnRate, Integer boxSpawnSize) {
+        this.threadList.add(new Bookstore(sectionList, deliveryArea, clientSpawnRate, bowSpawnRate, boxSpawnSize));
         this.setupDone = false;
     }
 

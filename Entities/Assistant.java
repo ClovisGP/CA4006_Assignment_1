@@ -32,7 +32,7 @@ public class Assistant extends SynchronizedThread {
     private boolean printEndAction = false;
     private String msgEndAction;
 
-    public Assistant(ArrayList<Section> sectionList, Section deliveryArea, int assistantCarryCapacity, int assistantMoveTime, int assistantMovePenaltyPerBook, int assistantTimeInsertBookIntoSection, int assistantBreakTime, int assistantMinTimeBeforeBreak, int assistantMaxTimeBeforeBreak, int currentTick, StatsManager statsManager) {
+    public Assistant(ArrayList<Section> sectionList, Section deliveryArea, int assistantCarryCapacity, int assistantMoveTime, int assistantMovePenaltyPerBook, int assistantTimeInsertBookIntoSection, int assistantBreakTime, int assistantMinTimeBeforeBreak, int assistantMaxTimeBeforeBreak, int currentTick) {
         this.sectionList = sectionList;
         this.deliveryArea = deliveryArea;
         this.assistantCarryCapacity = assistantCarryCapacity;
@@ -43,7 +43,7 @@ public class Assistant extends SynchronizedThread {
         this.minTimeBeforeBreak = assistantMinTimeBeforeBreak;
         this.maxTimeBeforeBreak = assistantMaxTimeBeforeBreak;
         Logger.writeLog("T = " + currentTick + " | A new assistant has been created");
-        this.statsManager = statsManager;
+        this.statsManager = StatsManager.getInstance();
     }
 
     /**

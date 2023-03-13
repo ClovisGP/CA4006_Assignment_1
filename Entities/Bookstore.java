@@ -23,13 +23,13 @@ public class Bookstore extends SynchronizedThread {
     private Section deliveryArea;
     private StatsManager statsManager;
 
-    public Bookstore(ArrayList<Section> sectionList, Section deliveryArea, Integer clientSpawnRate, Integer boxSpawnRate, Integer boxSpawnSize, StatsManager statsManager) {
+    public Bookstore(ArrayList<Section> sectionList, Section deliveryArea, Integer clientSpawnRate, Integer boxSpawnRate, Integer boxSpawnSize) {
             this.sectionList = sectionList;
             this.clientSpawnRate = clientSpawnRate;
             this.boxSpawnRate = boxSpawnRate;
             this.boxSpawnSize = boxSpawnSize;
             this.deliveryArea = deliveryArea;
-            this.statsManager = statsManager;
+            this.statsManager = StatsManager.getInstance();
     }
 
     /**
