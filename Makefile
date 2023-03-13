@@ -1,3 +1,6 @@
+#The argument for the run command
+ARG = $(arg)
+
 COMPIL =	javac
 
 EXEC =		java
@@ -18,7 +21,7 @@ compil:
 
 # The error comes because the Makefile is interrupt, it is not from the program
 run:
-	$(EXEC) -cp $(EXEDIR) Main
+	$(EXEC) -cp $(EXEDIR) Main $(ARG)
 
 clean :
 	rm -f *.class $(EXEDIR)

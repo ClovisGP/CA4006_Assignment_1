@@ -160,7 +160,7 @@ public class Assistant extends SynchronizedThread {
         this.waitingTicks = this.assistantMoveTime + (this.assistantMovePenaltyPerBook * this.currentBookList.size()) - 1;
         this.currentPosition = dest;
 
-        Logger.writeLog("T = " + this.scheduler.getTickNumber() + " | Assistant ID = " + Thread.currentThread().getId() + " | An assistant began to travel to " + dest);
+        Logger.writeLog("T = " + this.scheduler.getTickNumber() + " | Assistant ID = " + Thread.currentThread().threadId() + " | An assistant began to travel to " + dest);
         this.printEndAction = true;
         this.msgEndAction = "An assistant is arrived to " + dest;
     }
@@ -177,7 +177,7 @@ public class Assistant extends SynchronizedThread {
             if (delivery != null) this.currentBookList.add(delivery);
         }
         if (this.currentBookList.size() > 0) {
-            Logger.writeLog("T = " + this.scheduler.getTickNumber() + " | Assistant ID = " + Thread.currentThread().getId() + " | An assistant took " + comp + " book(s) from the delivery box.");
+            Logger.writeLog("T = " + this.scheduler.getTickNumber() + " | Assistant ID = " + Thread.currentThread().threadId() + " | An assistant took " + comp + " book(s) from the delivery box.");
             GPSSetUp();
             chooseNextDestination(true);
         }
@@ -201,7 +201,7 @@ public class Assistant extends SynchronizedThread {
                     this.msgEndAction = "An assistant has finished to put a book in the " + this.currentPosition + " section";
                     logComplement = "began putting";
                 }
-                Logger.writeLog("T = " + this.scheduler.getTickNumber() + " | Assistant ID = " + Thread.currentThread().getId() + " | An assistant " + logComplement + " a book in the " + this.currentPosition + " section");
+                Logger.writeLog("T = " + this.scheduler.getTickNumber() + " | Assistant ID = " + Thread.currentThread().threadId() + " | An assistant " + logComplement + " a book in the " + this.currentPosition + " section");
 
             } else {
                 chooseNextDestination(true);
@@ -216,16 +216,16 @@ public class Assistant extends SynchronizedThread {
         if (this.ticksBeforeBreakEnd > 0) {
             this.ticksBeforeBreakEnd = this.ticksBeforeBreakEnd - 1;
             if (this.ticksBeforeBreakEnd == 0) {
-                Logger.writeLog("T = " + this.scheduler.getTickNumber() + " | Assistant ID = " + Thread.currentThread().getId() + " | An assistant finished his break and returns work.");
+                Logger.writeLog("T = " + this.scheduler.getTickNumber() + " | Assistant ID = " + Thread.currentThread().threadId() + " | An assistant finished his break and returns work.");
                 lastBreakTaken = this.scheduler.getTickNumber();
             }
         } else {
             if ((this.lastBreakTaken + minTimeBeforeBreak) <= this.scheduler.getTickNumber()) {
                 if ((this.lastBreakTaken + maxTimeBeforeBreak) <= this.scheduler.getTickNumber()) {
                     this.ticksBeforeBreakEnd = this.breakTime;
-                    Logger.writeLog("T = " + this.scheduler.getTickNumber() + " | Assistant ID = " + Thread.currentThread().getId() + " | An assistant takes a break.");
+                    Logger.writeLog("T = " + this.scheduler.getTickNumber() + " | Assistant ID = " + Thread.currentThread().threadId() + " | An assistant takes a break.");
                 } else if (doesItTakesBreak(maxTimeBeforeBreak - minTimeBeforeBreak)) {
-                    Logger.writeLog("T = " + this.scheduler.getTickNumber() + " | Assistant ID = " + Thread.currentThread().getId() + " | An assistant takes a break.");
+                    Logger.writeLog("T = " + this.scheduler.getTickNumber() + " | Assistant ID = " + Thread.currentThread().threadId() + " | An assistant takes a break.");
                     this.ticksBeforeBreakEnd = this.breakTime;
                 }
             }
@@ -235,7 +235,7 @@ public class Assistant extends SynchronizedThread {
                     this.waitingTicks = this.waitingTicks - 1;
                     if (this.waitingTicks == 0 && this.printEndAction) {
                         this.printEndAction = false;
-                        Logger.writeLog("T = " + this.scheduler.getTickNumber() + " | Assistant ID = " + Thread.currentThread().getId() + " | " + msgEndAction);
+                        Logger.writeLog("T = " + this.scheduler.getTickNumber() + " | Assistant ID = " + Thread.currentThread().threadId() + " | " + msgEndAction);
                     }
                 } else {
                     if (this.currentPosition == "delivery") {
