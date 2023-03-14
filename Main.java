@@ -6,6 +6,7 @@ import Entities.TimeScheduler;
 import Entities.Bookstore;
 
 import Objects.Book;
+import Objects.Delivery;
 import Objects.Section;
 
 import Tools.Logger;
@@ -31,10 +32,10 @@ public class Main {
         System.out.println("        -csr number: The average number of tick a client will take to spawn.");
         System.out.println("            default: -csr 10");
         System.out.println("    Deliveries:");
-        System.out.println("        -bsr number: The average number of tick a box will take to spawn.");
-        System.out.println("            default: -bsr 100");
-        System.out.println("        -bs number: the number of books a box hold when delivered.");
-        System.out.println("            default: -bs 10");
+        System.out.println("        -dsr number: The average number of tick a box will take to spawn.");
+        System.out.println("            default: -dsr 100");
+        System.out.println("        -ds number: the number of books a box hold when delivered.");
+        System.out.println("            default: -ds 10");
         System.out.println("    Assistants:");
         System.out.println("        -an number: The number of assistants to use.");
         System.out.println("            default: -an 10");
@@ -179,33 +180,33 @@ public class Main {
                             printHelp();
                         }
                     }
-                } else if (token.equals("-bsr")) {
+                } else if (token.equals("-dsr")) {
                     if (i + 1 < args.length && !args[i + 1].startsWith("-")) {
                         i++;
                         try {
                             bowSpawnRate = Integer.parseInt(args[i]);
                             if (bowSpawnRate < 1) {
-                                System.out.println("-bsr must be at least 1.");
+                                System.out.println("-dsr must be at least 1.");
                                 printHelp();
                             }
                         }
                         catch (NumberFormatException e) {
-                            System.out.println("The argument after '-bsr' is not an integer.");
+                            System.out.println("The argument after '-dsr' is not an integer.");
                             printHelp();
                         }
                     }
-                } else if (token.equals("-bs")) {
+                } else if (token.equals("-ds")) {
                     if (i + 1 < args.length && !args[i + 1].startsWith("-")) {
                         i++;
                         try {
                             boxSpawnSize = Integer.parseInt(args[i]);
                             if (boxSpawnSize < 1) {
-                                System.out.println("-bs must be at least 1.");
+                                System.out.println("-ds must be at least 1.");
                                 printHelp();
                             }
                         }
                         catch (NumberFormatException e) {
-                            System.out.println("The argument after '-bs' is not an integer.");
+                            System.out.println("The argument after '-ds' is not an integer.");
                             printHelp();
                         }
                     }
@@ -359,14 +360,15 @@ public class Main {
         for (String name : sectionNames) {
             sectionList.add(new Section(name, sectionCapacity, startingNumberBooksSection));
         }
-        Section deliveryArea = new Section("Delivery", 0, 0);
-        Bookstore.firstDelivery(deliveryArea, boxSpawnSize, sectionList);
+
+        Delivery delivery = new Delivery(boxSpawnSize, sectionNames);
+        delivery.doADelivery();
 
         TimeScheduler scheduler = new TimeScheduler(tickTimeValue);
         scheduler.addStatsManager(statsManager);
-        scheduler.addBookstore(sectionList, deliveryArea, clientSpawnRate, bowSpawnRate, boxSpawnSize);
+        scheduler.addBookstore(sectionList, delivery, clientSpawnRate, bowSpawnRate);
         for (int i = 0; i < assistantNumber; i++) {
-            scheduler.addAssistant(sectionList, deliveryArea, assistantCarryCapacity, assistantMoveTime, assistantMovePenaltyPerBook, assistantTimeInsertBookIntoSection, assistantBreakTime, assistantMinTimeBeforeBreak, assistantMaxTimeBeforeBreak);
+            scheduler.addAssistant(sectionList, delivery, assistantCarryCapacity, assistantMoveTime, assistantMovePenaltyPerBook, assistantTimeInsertBookIntoSection, assistantBreakTime, assistantMinTimeBeforeBreak, assistantMaxTimeBeforeBreak);
         }
         scheduler.start();
     }

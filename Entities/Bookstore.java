@@ -1,11 +1,8 @@
 package Entities;
 
-import java.util.concurrent.TimeUnit;
 import java.util.ArrayList;
-
-import Objects.Book;
 import Objects.Section;
-
+import Objects.Delivery;
 import Tools.Logger;
 import Tools.StatsManager;
 
@@ -15,19 +12,15 @@ import Tools.StatsManager;
 public class Bookstore extends SynchronizedThread {
 
     private ArrayList<Section> sectionList = null;
-    private Integer lastTickCustomer = 0;
-    private Integer lastTickDelivery = 0;
     private Integer clientSpawnRate;
     private Integer boxSpawnRate;
-    private Integer boxSpawnSize;
-    private Section deliveryArea;
+    private Delivery deliveryArea;
     private StatsManager statsManager;
 
-    public Bookstore(ArrayList<Section> sectionList, Section deliveryArea, Integer clientSpawnRate, Integer boxSpawnRate, Integer boxSpawnSize) {
+    public Bookstore(ArrayList<Section> sectionList, Delivery deliveryArea, Integer clientSpawnRate, Integer boxSpawnRate) {
             this.sectionList = sectionList;
             this.clientSpawnRate = clientSpawnRate;
             this.boxSpawnRate = boxSpawnRate;
-            this.boxSpawnSize = boxSpawnSize;
             this.deliveryArea = deliveryArea;
             this.statsManager = StatsManager.getInstance();
     }
@@ -48,7 +41,6 @@ public class Bookstore extends SynchronizedThread {
      */
     private void customerManagement() {
         if (doesItSpawn(this.clientSpawnRate)) {
-            this.lastTickCustomer = this.scheduler.getTickNumber();
 
             Integer sectionIndex = (int)(Math.random() * this.sectionList.size());
             if (sectionList.get(sectionIndex).takeBook() != null) {
@@ -62,23 +54,9 @@ public class Bookstore extends SynchronizedThread {
      */
     private void deliveryManagement() {
         if (doesItSpawn(this.boxSpawnRate)) {
-            this.lastTickDelivery = this.scheduler.getTickNumber();
-            for (int comp = 0; comp < this.boxSpawnSize; comp++) {
-                this.deliveryArea.addBook(new Book(sectionList.get((int)(Math.random() * this.sectionList.size())).getName()));
-            }
+            deliveryArea.doADelivery();
             Logger.writeLog("T = " + this.scheduler.getTickNumber() + " | A new delivery was made. The delivery area contains now " + (this.deliveryArea.getNbCurrentBook() < 50 ? this.deliveryArea.getNbCurrentBook() : this.deliveryArea.getNbCurrentBook() + ". You should consider hiring some new assistants sir") + ".");
         }
-    }
-
-    /**
-     * This function aims to generate the first delivery
-     */
-    public static void firstDelivery(Section deliveryArea, int boxSpawnSize, ArrayList<Section> sectionList) {
-        // deliveryArea already contains a first book
-        for (int comp = 0; comp < boxSpawnSize; comp++) {
-            deliveryArea.addBook(new Book(sectionList.get((int)(Math.random() * sectionList.size())).getName()));
-        }
-        Logger.writeLog("T = Before openning | A new delivery was made. The delivery area contains now " + deliveryArea.getNbCurrentBook() + ".");
     }
 
     protected void doWork() {

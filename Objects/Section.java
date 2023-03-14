@@ -1,8 +1,6 @@
 package Objects;
 
 import java.util.ArrayList;
-
-import Objects.Book;
 import Tools.StatsManager;
 
 /**
@@ -24,7 +22,7 @@ public class Section {
         this.name = name;
         this.nbMaxBook = nbMaxBook;
         for (int i = 0; i < startingNumberOfBooks; i++) {
-            this.booksList.add(new Book(name + "-starting_book-" + Integer.toString(i)));
+            this.booksList.add(new Book(name));
         }
         this.statsManager = StatsManager.getInstance();
     }
@@ -69,7 +67,7 @@ public class Section {
     public synchronized returnType addBook(Book newBook) {
         if (nbWaitingCustomer > 0) {
             this.nbWaitingCustomer--;
-            if (this.name != "delivery") statsManager.statsAddBookBought();
+            statsManager.statsAddBookBought();
             return returnType.BOOKTOCUSTOMER;
         }
         if (booksList.size() + 1 <= nbMaxBook || nbMaxBook == 0) {
@@ -78,13 +76,17 @@ public class Section {
         }
         return returnType.FULLSECTION;
     }
+
+    public boolean isFull() {
+        return this.booksList.size() >= this.nbMaxBook;
+    }
     
     /**
-     *If there are a available book, it is removed from the section and returned. Unless, increment the number of customer on this section and returns null.
+     * If there are a available book, it is removed from the section and returned. Unless, increment the number of customer on this section and returns null.
      */
     public synchronized Book takeBook() {
         if (this.booksList.size() > 0) {
-            if (this.name != "delivery") statsManager.statsAddBookBought();
+            statsManager.statsAddBookBought();
             return this.booksList.remove(0);
         } else {
             this.nbWaitingCustomer++;

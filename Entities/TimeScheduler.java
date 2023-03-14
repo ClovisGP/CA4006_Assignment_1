@@ -2,7 +2,7 @@ package Entities;
 
 import java.util.concurrent.*;
 import java.util.ArrayList;
-
+import Objects.Delivery;
 import Objects.Section;
 import Tools.StatsManager;
 
@@ -78,7 +78,7 @@ public class TimeScheduler extends Thread {
         }
     }
 
-    public synchronized void addAssistant(ArrayList<Section> sectionList, Section deliveryArea, int assistantCarryCapacity, int assistantMoveTime, int assistantMovePenaltyPerBook, int assistantTimeInsertBookIntoSection, int assistantBreakTime, int assistantMinTimeBeforeBreak, int assistantMaxTimeBeforeBreak) {
+    public synchronized void addAssistant(ArrayList<Section> sectionList, Delivery deliveryArea, int assistantCarryCapacity, int assistantMoveTime, int assistantMovePenaltyPerBook, int assistantTimeInsertBookIntoSection, int assistantBreakTime, int assistantMinTimeBeforeBreak, int assistantMaxTimeBeforeBreak) {
         this.threadList.add(new Assistant(sectionList, deliveryArea, assistantCarryCapacity, assistantMoveTime, assistantMovePenaltyPerBook, assistantTimeInsertBookIntoSection, assistantBreakTime, assistantMinTimeBeforeBreak, assistantMaxTimeBeforeBreak, this.ticks));
         this.setupDone = false;
     }
@@ -89,10 +89,9 @@ public class TimeScheduler extends Thread {
      * @param deliveryArea it is the delivery section
      * @param clientSpawnRate it is the spawn rate of a customer
      * @param bowSpawnRate it is the spawn rate of a delivery box
-     * @param boxSpawnSize it is the size of a delivery box
      */
-    public synchronized void addBookstore(ArrayList<Section> sectionList, Section deliveryArea, Integer clientSpawnRate, Integer bowSpawnRate, Integer boxSpawnSize) {
-        this.threadList.add(new Bookstore(sectionList, deliveryArea, clientSpawnRate, bowSpawnRate, boxSpawnSize));
+    public synchronized void addBookstore(ArrayList<Section> sectionList, Delivery deliveryArea, Integer clientSpawnRate, Integer bowSpawnRate) {
+        this.threadList.add(new Bookstore(sectionList, deliveryArea, clientSpawnRate, bowSpawnRate));
         this.setupDone = false;
     }
 

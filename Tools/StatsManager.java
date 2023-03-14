@@ -2,10 +2,8 @@ package Tools;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.concurrent.*;
 
 import Entities.SynchronizedThread;
 
@@ -17,7 +15,7 @@ public class StatsManager extends SynchronizedThread {
     private ArrayList<Integer> booksBought = new ArrayList<Integer>(Arrays.asList(0));
     private String command = "";
     private int tickReset = 0;
-    private int numberOfTicksToAgregate = 100;
+    private int numberOfTicksToAgregate = 10;
     private int numberOfDataPointsToKeep = 50;
 
     private StatsManager() {}
@@ -171,16 +169,35 @@ public class StatsManager extends SynchronizedThread {
         if (tickReset - numberOfTicksToAgregate * 50 > 0) {
             min = tickReset - numberOfTicksToAgregate * 50;
         }
-        ArrayList<String> graphs = new ArrayList<String>();
-        graphs.add(graph(booksBought, min, max, "Number of book sold"));
-        graphs.add(graph(booksBought, min, max, "booksBought"));
-        graphs.add(graph(booksBought, min, max, "booksBought"));
-        graphs.add(graph(booksBought, min, max, "booksBought"));
-        graphs.add(graph(booksBought, min, max, "booksBought"));
-        graphs.add(graph(booksBought, min, max, "booksBought"));
+        ArrayList<String> charts = new ArrayList<String>();
+        charts.add(graph(booksBought, min, max, "Number of book sold"));
+        charts.add(graph(booksBought, min, max, "booksBought"));
+        charts.add(graph(booksBought, min, max, "booksBought"));
+        charts.add(graph(booksBought, min, max, "booksBought"));
+        charts.add(graph(booksBought, min, max, "booksBought"));
+        charts.add(graph(booksBought, min, max, "booksBought"));
 
         String res;
-        print(graphs.get(0));
+        int rowLenght = 3;
+        int maxLength = 0;
+        for (int i = 0; i < charts.size(); i++) {
+            int length = 0;
+            String chart = charts.get(i);
+            while (chart.charAt(length) != '\n') length++;
+
+            if (maxLength < length) maxLength = length;
+        }
+        int lenFullLine = maxLength + rowLenght + 1;
+        int rowNum = (int)(charts.size() / (double)rowLenght) + 1;
+        for (int row = 0; row < rowNum; row++) {
+            String rowString = "";
+            for (int j = 0; j < rowLenght; j++) {
+                int index = j + rowLenght * row;
+                String chart = charts.get(index);
+                
+            }
+        }
+        print(charts.get(0));
     }
 
     private void resetStats() {
