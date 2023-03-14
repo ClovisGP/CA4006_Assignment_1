@@ -35,7 +35,7 @@ public class StatsManager extends SynchronizedThread {
     }
 
     private void print(String msg) {
-        System.out.print("\033[H\033[2J\n" + msg + "\n" + command + "\nYou can write the new lenght in millieconds of a tick and press enter for the change to take effet.\n");
+        System.out.print("\033[H\033[2J\n" + msg + "\n" + command + "\nYou can write the new lenght in millieconds of a tick and press enter for the change to take effet.\nCTRL + C to exit.\n");
         System.out.flush();
     }
 
@@ -106,7 +106,7 @@ public class StatsManager extends SynchronizedThread {
             rightpadding = leftPadding - 1;
         }
         chart = repeatString(" ", leftPadding) + title + repeatString(" ", rightpadding) + "\n";
-        chart = chart + "\n";
+        chart = chart + repeatString(" ", leftPadding + title.length() + rightpadding) + "\n";
 
         for (int i = height - 1; i > -1; i--) {
             //add vertical axis
@@ -163,41 +163,39 @@ public class StatsManager extends SynchronizedThread {
         booksBought.set(index, booksBought.get(index) + 1);
     }
 
+    private String myConcat(String chart1, String chart2) {
+        String res = "";
+        int width = 0;
+        while (width < chart1.length() && chart1.charAt(width) != '\n') width++;
+        String[] split = chart1.split("\n");
+        int height = split[split.length - 1].isEmpty() ? split.length - 1 : split.length;
+        
+        String[] split1 = chart1.split("\n");
+        String[] split2 = chart2.split("\n");
+        for (int i = 0; i < height; i++) {
+            res = res.concat( split1[i] + "    " + split2[i] + "\n");
+        }
+        return res;
+    }
+
     private void printStats() {
         int min = 0;
         int max = tickReset;
         if (tickReset - numberOfTicksToAgregate * 50 > 0) {
             min = tickReset - numberOfTicksToAgregate * 50;
         }
-        ArrayList<String> charts = new ArrayList<String>();
-        charts.add(graph(booksBought, min, max, "Number of book sold"));
-        charts.add(graph(booksBought, min, max, "booksBought"));
-        charts.add(graph(booksBought, min, max, "booksBought"));
-        charts.add(graph(booksBought, min, max, "booksBought"));
-        charts.add(graph(booksBought, min, max, "booksBought"));
-        charts.add(graph(booksBought, min, max, "booksBought"));
+        String chart1 = graph(booksBought, min, max, "Number of book sold");
+        String chart2 = graph(booksBought, min, max, "booksBought");
+        String chart3 = graph(booksBought, min, max, "booksBought 2");
+        String chart4 = graph(booksBought, min, max, "booksBought 3");
+        String chart5 = graph(booksBought, min, max, "booksBought 4");
 
         String res;
-        int rowLenght = 3;
-        int maxLength = 0;
-        for (int i = 0; i < charts.size(); i++) {
-            int length = 0;
-            String chart = charts.get(i);
-            while (chart.charAt(length) != '\n') length++;
-
-            if (maxLength < length) maxLength = length;
-        }
-        int lenFullLine = maxLength + rowLenght + 1;
-        int rowNum = (int)(charts.size() / (double)rowLenght) + 1;
-        for (int row = 0; row < rowNum; row++) {
-            String rowString = "";
-            for (int j = 0; j < rowLenght; j++) {
-                int index = j + rowLenght * row;
-                String chart = charts.get(index);
-                
-            }
-        }
-        print(charts.get(0));
+        res = myConcat(chart1, chart2);
+        res = myConcat(res, chart3);
+        res = res + "\n\n";
+        res = res + myConcat(chart4, chart5);
+        print(res);
     }
 
     private void resetStats() {
