@@ -331,14 +331,14 @@ public class Main {
                             printHelp();
                         }
                     }
-                } else if (token.equals("-h")) {
-                    printHelp();
                 } else if (token.equals("-d")) {
                     if (args.length > 1) {
                         System.out.println("The argument '-d' can only be used alone.");
                         printHelp();
                     }
                     break;
+                } else {
+                    printHelp();
                 }
             }
         }

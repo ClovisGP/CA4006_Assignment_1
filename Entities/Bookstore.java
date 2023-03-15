@@ -55,7 +55,7 @@ public class Bookstore extends SynchronizedThread {
     private void deliveryManagement() {
         if (doesItSpawn(this.boxSpawnRate)) {
             deliveryArea.doADelivery();
-            Logger.writeLog("T = " + this.scheduler.getTickNumber() + " | A new delivery was made. The delivery area contains now " + (this.deliveryArea.getNbCurrentBook() < 50 ? this.deliveryArea.getNbCurrentBook() : this.deliveryArea.getNbCurrentBook() + ". You should consider hiring some new assistants sir") + ".");
+            Logger.writeLog("T = " + this.scheduler.getTickNumber() + " | A new delivery was made. The delivery area contains now " + (this.deliveryArea.getNbCurrentBook() < 50 ? Integer.toString(this.deliveryArea.getNbCurrentBook()) + " book(s)" : this.deliveryArea.getNbCurrentBook() + " books. You should consider hiring some new assistants sir") + ".");
         }
     }
 

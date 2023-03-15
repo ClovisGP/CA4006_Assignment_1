@@ -47,7 +47,7 @@ public class Section {
      * Get the name of the section.
      * @return A String which cantains the name of the section
      */
-    public Integer getNbWaitingCustomer() {
+    public int getNbWaitingCustomer() {
         return this.nbWaitingCustomer;
     }
 
@@ -55,7 +55,7 @@ public class Section {
      * Get the current number of books in the section.
      * @return A Integer which cantains the current number of books in the section.
      */
-    public synchronized int getNbCurrentBook() {
+    public int getNbCurrentBook() {
         return this.booksList.size();
     }
 

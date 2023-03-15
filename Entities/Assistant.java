@@ -159,7 +159,7 @@ public class Assistant extends SynchronizedThread {
 
         Logger.writeLog("T = " + this.scheduler.getTickNumber() + " | Assistant ID = " + Thread.currentThread().threadId() + " | An assistant began to travel to " + dest);
         this.printEndAction = true;
-        this.msgEndAction = "An assistant is arrived to " + dest;
+        this.msgEndAction = "An assistant has arrived to " + dest;
     }
 
 

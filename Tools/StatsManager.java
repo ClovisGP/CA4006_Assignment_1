@@ -12,7 +12,11 @@ public class StatsManager extends SynchronizedThread {
     private static StatsManager single_instance = null;
     private InputStreamReader fileInputStream = new InputStreamReader(System.in);
     private BufferedReader bufferedReader = new BufferedReader(fileInputStream);
-    private ArrayList<Integer> booksBought = new ArrayList<Integer>(Arrays.asList(0));
+    private ArrayList<Integer> booksSold = new ArrayList<Integer>(Arrays.asList(0));
+    private ArrayList<Integer> booksWaitingDelivery = new ArrayList<Integer>(Arrays.asList(0));
+    private ArrayList<Integer> booksWaitingInSection = new ArrayList<Integer>(Arrays.asList(0));
+    private ArrayList<Integer> customersWaitingInSection = new ArrayList<Integer>(Arrays.asList(0));
+    private ArrayList<Integer> numberOfAssistantWorking = new ArrayList<Integer>(Arrays.asList(0));
     private String command = "";
     private int tickReset = 0;
     private int numberOfTicksToAgregate = 10;
@@ -23,7 +27,6 @@ public class StatsManager extends SynchronizedThread {
     public static synchronized StatsManager getInstance() {
         if (single_instance == null)
             single_instance = new StatsManager();
-  
         return single_instance;
     }
 
@@ -35,7 +38,7 @@ public class StatsManager extends SynchronizedThread {
     }
 
     private void print(String msg) {
-        System.out.print("\033[H\033[2J\n" + msg + "\n" + command + "\nYou can write the new lenght in millieconds of a tick and press enter for the change to take effet.\nCTRL + C to exit.\n");
+        System.out.print("\033[H\033[2J\n" + msg + "\n" + command + "\nYou can write the new lenght in millieconds of a tick and press enter for the change to take effet.\nEnter 'quit' or use CTRL + C to exit. If you have issues seeing all the charts please increase the size of the terminal.\n");
         System.out.flush();
     }
 
@@ -158,9 +161,14 @@ public class StatsManager extends SynchronizedThread {
         return res;
     }
 
-    public synchronized void statsAddBookBought() {
-        int index = booksBought.size() - 1;
-        booksBought.set(index, booksBought.get(index) + 1);
+    public void statsAddBookBought() {
+        int index = booksSold.size() - 1;
+        booksSold.set(index, booksSold.get(index) + 1);
+    }
+
+    public void numberOfBookWaitingInSection(int booksNumber) {
+        int index = booksWaitingInSection.size() - 1;
+        booksWaitingInSection.set(index, booksWaitingInSection.get(index) + booksNumber);
     }
 
     private String myConcat(String chart1, String chart2) {
@@ -184,11 +192,11 @@ public class StatsManager extends SynchronizedThread {
         if (tickReset - numberOfTicksToAgregate * 50 > 0) {
             min = tickReset - numberOfTicksToAgregate * 50;
         }
-        String chart1 = graph(booksBought, min, max, "Number of book sold");
-        String chart2 = graph(booksBought, min, max, "booksBought");
-        String chart3 = graph(booksBought, min, max, "booksBought 2");
-        String chart4 = graph(booksBought, min, max, "booksBought 3");
-        String chart5 = graph(booksBought, min, max, "booksBought 4");
+        String chart1 = graph(booksSold, min, max, "Number of book sold.");
+        String chart2 = graph(booksWaitingInSection, min, max, "Books waiting in the sections.");
+        String chart3 = graph(booksSold, min, max, "booksSold 2");
+        String chart4 = graph(booksSold, min, max, "booksSold 3");
+        String chart5 = graph(booksSold, min, max, "booksSold 4");
 
         String res;
         res = myConcat(chart1, chart2);
@@ -199,8 +207,8 @@ public class StatsManager extends SynchronizedThread {
     }
 
     private void resetStats() {
-        while (booksBought.size() > numberOfDataPointsToKeep) booksBought.remove(0);
-        booksBought.add(0);
+        while (booksSold.size() > numberOfDataPointsToKeep) booksSold.remove(0);
+        booksSold.add(0);
         
     }
 
@@ -215,6 +223,7 @@ public class StatsManager extends SynchronizedThread {
             }
             String newCommand = readOnlyWhenDone();
             if (newCommand.length() > 0) {
+                if (newCommand.equals("quit")) System.exit(0);
                 int newTickLenght = -1;
                 try {
                     newTickLenght = Integer.parseInt(newCommand);

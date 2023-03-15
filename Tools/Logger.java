@@ -14,7 +14,7 @@ public class Logger {
     /**
      * This function aims to prepare the log file by removing all it content and create it if it doesn't exist already.
      */
-    public static synchronized void initLoggerFile() {
+    public static void initLoggerFile() {
         try {
             // Check if the file exists and if it not the case, create it.
             File checkFile = new File(fileName);
@@ -39,8 +39,6 @@ public class Logger {
      */
     public static synchronized void writeLog(String msg) {
         try {
-            //System.out.println(msg);
-
             // Write the message in the file.
             BufferedWriter logFile = new BufferedWriter(new FileWriter(fileName, true));
             logFile.append(msg + "\n");

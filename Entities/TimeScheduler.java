@@ -60,8 +60,8 @@ public class TimeScheduler extends Thread {
                     setupDone = true;
                 }
                 this.barrier.await();
-                this.barrier.reset();
                 this.ticks++;
+                this.barrier.reset();
                 //System.out.println("New Tick => " + this.ticks);
 
                 TimeUnit.MILLISECONDS.sleep(this.tickMilliLength);
@@ -78,7 +78,7 @@ public class TimeScheduler extends Thread {
         }
     }
 
-    public synchronized void addAssistant(ArrayList<Section> sectionList, Delivery deliveryArea, int assistantCarryCapacity, int assistantMoveTime, int assistantMovePenaltyPerBook, int assistantTimeInsertBookIntoSection, int assistantBreakTime, int assistantMinTimeBeforeBreak, int assistantMaxTimeBeforeBreak) {
+    public void addAssistant(ArrayList<Section> sectionList, Delivery deliveryArea, int assistantCarryCapacity, int assistantMoveTime, int assistantMovePenaltyPerBook, int assistantTimeInsertBookIntoSection, int assistantBreakTime, int assistantMinTimeBeforeBreak, int assistantMaxTimeBeforeBreak) {
         this.threadList.add(new Assistant(sectionList, deliveryArea, assistantCarryCapacity, assistantMoveTime, assistantMovePenaltyPerBook, assistantTimeInsertBookIntoSection, assistantBreakTime, assistantMinTimeBeforeBreak, assistantMaxTimeBeforeBreak, this.ticks));
         this.setupDone = false;
     }
@@ -90,12 +90,12 @@ public class TimeScheduler extends Thread {
      * @param clientSpawnRate it is the spawn rate of a customer
      * @param bowSpawnRate it is the spawn rate of a delivery box
      */
-    public synchronized void addBookstore(ArrayList<Section> sectionList, Delivery deliveryArea, Integer clientSpawnRate, Integer bowSpawnRate) {
+    public void addBookstore(ArrayList<Section> sectionList, Delivery deliveryArea, Integer clientSpawnRate, Integer bowSpawnRate) {
         this.threadList.add(new Bookstore(sectionList, deliveryArea, clientSpawnRate, bowSpawnRate));
         this.setupDone = false;
     }
 
-    public synchronized void addStatsManager(StatsManager manager) {
+    public void addStatsManager(StatsManager manager) {
         this.threadList.add(manager);
         this.setupDone = false;
     }

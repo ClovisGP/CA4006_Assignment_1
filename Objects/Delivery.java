@@ -36,7 +36,7 @@ public class Delivery {
      * Get the current number of books in the section.
      * @return A Integer which cantains the current number of books in the section.
      */
-    public synchronized int getNbCurrentBook() {
+    public int getNbCurrentBook() {
         return this.booksList.size();
     }
     
