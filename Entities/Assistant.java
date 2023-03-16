@@ -232,7 +232,6 @@ public class Assistant extends SynchronizedThread {
                 lastBreakTaken = this.scheduler.getTickNumber();
             }
         } else {
-            statsManager.assistantIsWorking();
             if ((this.lastBreakTaken + minTimeBeforeBreak) <= this.scheduler.getTickNumber()) {
                 if ((this.lastBreakTaken + maxTimeBeforeBreak) <= this.scheduler.getTickNumber()) {
                     this.ticksBeforeBreakEnd = this.breakTime;
@@ -258,6 +257,7 @@ public class Assistant extends SynchronizedThread {
                     }
                 }
             }
+            statsManager.assistantIsWorking();
         }
     }
 }

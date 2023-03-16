@@ -254,6 +254,11 @@ public class StatsManager extends SynchronizedThread {
 
     public void doWork() {
         try {
+            if (getTick() >= tickReset + numberOfTicksToAgregate) {
+                printStats();
+                resetStats();
+                tickReset = tickReset + numberOfTicksToAgregate;
+            }
             if (this.command.length() == 0) {
                 if (scheduler.getLenghtMillisecOfTick() == 0) {
                     this.command = "The tick time lenght is 0, the program runs as fast as possible.";
@@ -276,11 +281,6 @@ public class StatsManager extends SynchronizedThread {
                         scheduler.setLenghtOfTick(newTickLenght);
                     }
                 } catch (Exception e) {}
-            }
-            if (getTick() >= tickReset + numberOfTicksToAgregate) {
-                printStats();
-                resetStats();
-                tickReset = tickReset + numberOfTicksToAgregate;
             }
         } catch (Exception e) {
             exitThread();
