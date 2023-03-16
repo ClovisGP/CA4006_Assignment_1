@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import Objects.Section;
 import Objects.Delivery;
 import Tools.Logger;
-import Tools.StatsManager;
 
 /**
  * This class aims to manage the deliveries and the curstomers, and all.
@@ -15,14 +14,12 @@ public class Bookstore extends SynchronizedThread {
     private Integer clientSpawnRate;
     private Integer boxSpawnRate;
     private Delivery deliveryArea;
-    private StatsManager statsManager;
 
     public Bookstore(ArrayList<Section> sectionList, Delivery deliveryArea, Integer clientSpawnRate, Integer boxSpawnRate) {
             this.sectionList = sectionList;
             this.clientSpawnRate = clientSpawnRate;
             this.boxSpawnRate = boxSpawnRate;
             this.deliveryArea = deliveryArea;
-            this.statsManager = StatsManager.getInstance();
     }
 
     /**

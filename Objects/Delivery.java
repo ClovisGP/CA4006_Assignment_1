@@ -1,21 +1,18 @@
 package Objects;
 
 import java.util.ArrayList;
-import Tools.StatsManager;
 
 /**
  * A section is the class that represents a bookshelf.
  */
 public class Delivery {
     private ArrayList<Book> booksList = new ArrayList<Book>();
-    private StatsManager statsManager;
     private int sizeOfDelivery;
     private ArrayList<String> sectionNames;
 
     public Delivery(int sizeOfDelivery, ArrayList<String> sectionNames) {
         this.sizeOfDelivery = sizeOfDelivery;
         this.sectionNames = sectionNames;
-        this.statsManager = StatsManager.getInstance();
     }
 
     public void doADelivery() {

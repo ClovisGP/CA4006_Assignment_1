@@ -3,7 +3,6 @@ package Entities;
 import java.util.ArrayList;
 import Objects.Book;
 import Objects.Section;
-import Objects.Section.returnType;
 import Objects.Delivery;
 import Tools.Logger;
 import Tools.StatsManager;
@@ -200,7 +199,7 @@ public class Assistant extends SynchronizedThread {
             chooseNextDestination(true);
         }
         
-        returnType a = currentSection.addBook(currentBook);
+        currentSection.addBook(currentBook);
         Logger.writeLog("T = " + this.scheduler.getTickNumber() + " | A book has been bought from the " + currentSection.getName() + " section.");
         int count = 1;
         if (assistantTimeInsertBookIntoSection == 0) {
