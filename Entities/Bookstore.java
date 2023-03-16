@@ -43,10 +43,31 @@ public class Bookstore extends SynchronizedThread {
         if (doesItSpawn(this.clientSpawnRate)) {
 
             Integer sectionIndex = (int)(Math.random() * this.sectionList.size());
+            if (sectionIndex >= this.sectionList.size()) sectionIndex = this.sectionList.size() - 1;
             if (sectionList.get(sectionIndex).takeBook() != null) {
                 Logger.writeLog("T = " + this.scheduler.getTickNumber() + " | A book has been bought from the " + this.sectionList.get(sectionIndex).getName() + " section.");
             }
         }
+    }
+
+    public int getbooksInSection() {
+        int res = 0;
+        for (Section section : this.sectionList) {
+            res += section.getNbCurrentBook();
+        }
+        return res;
+    }
+
+    public int getBooksInDelivery() {
+        return deliveryArea.getNbCurrentBook();
+    }
+
+    public int getNumberClientsWaiting() {
+        int res = 0;
+        for (Section section : this.sectionList) {
+            res += section.getNbWaitingCustomer();
+        }
+        return res;
     }
 
     /**

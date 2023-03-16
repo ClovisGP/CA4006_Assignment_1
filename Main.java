@@ -110,8 +110,8 @@ public class Main {
                         i++;
                         try {
                             sectionCapacity = Integer.parseInt(args[i]);
-                            if (sectionCapacity < 1) {
-                                System.out.println("-sc must be at least 1.");
+                            if (sectionCapacity < 0) {
+                                System.out.println("-sc cannot be negative.");
                                 printHelp();
                             }
                         }

@@ -25,11 +25,9 @@ public class Delivery {
     }
 
     private void addABook() {
-        for (int comp = 0; comp < this.sizeOfDelivery; comp++) {
-            int random = (int)(Math.random() * this.sectionNames.size());
-            if (random == this.sectionNames.size()) random--; // rare case if you happen to receive 1.0 with Math.random
-            booksList.add(new Book(sectionNames.get(random)));
-        }
+        int random = (int)(Math.random() * this.sectionNames.size());
+        if (random >= this.sectionNames.size()) random = this.sectionNames.size() - 1;
+        booksList.add(new Book(sectionNames.get(random)));
     }
 
     /**

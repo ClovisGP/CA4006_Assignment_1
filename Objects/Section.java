@@ -70,7 +70,7 @@ public class Section {
             statsManager.statsAddBookBought();
             return returnType.BOOKTOCUSTOMER;
         }
-        if (booksList.size() + 1 <= nbMaxBook || nbMaxBook == 0) {
+        if (booksList.size() < nbMaxBook || nbMaxBook == 0) {
             this.booksList.add(newBook);
             return returnType.BOOKADDED;
         }
@@ -78,6 +78,7 @@ public class Section {
     }
 
     public boolean isFull() {
+        if (nbMaxBook == 0) return false;
         return this.booksList.size() >= this.nbMaxBook;
     }
     

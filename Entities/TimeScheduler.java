@@ -16,6 +16,8 @@ public class TimeScheduler extends Thread {
 
     private CyclicBarrier barrier = null;
     private boolean setupDone = false;
+    private StatsManager statsManager;
+    private Bookstore bookstore = null;
 
     public TimeScheduler() {
         this.threadList = new ArrayList<SynchronizedThread>();
@@ -25,6 +27,7 @@ public class TimeScheduler extends Thread {
     public TimeScheduler(int minimumTickMilliLength) {
         this.threadList = new ArrayList<SynchronizedThread>();
         this.tickMilliLength = minimumTickMilliLength;
+        this.statsManager = StatsManager.getInstance();
     }
 
     /**
@@ -59,6 +62,13 @@ public class TimeScheduler extends Thread {
                     }
                     setupDone = true;
                 }
+                
+                while (this.barrier.getNumberWaiting() >= this.barrier.getParties() - 1);
+                // stats
+                this.statsManager.booksInSection(this.bookstore.getbooksInSection());
+                this.statsManager.booksInDelivery(this.bookstore.getBooksInDelivery());
+                this.statsManager.numberClientWaitingInSection(this.bookstore.getNumberClientsWaiting());
+                // synchronisation
                 this.barrier.await();
                 this.ticks++;
                 this.barrier.reset();
@@ -91,7 +101,9 @@ public class TimeScheduler extends Thread {
      * @param bowSpawnRate it is the spawn rate of a delivery box
      */
     public void addBookstore(ArrayList<Section> sectionList, Delivery deliveryArea, Integer clientSpawnRate, Integer bowSpawnRate) {
-        this.threadList.add(new Bookstore(sectionList, deliveryArea, clientSpawnRate, bowSpawnRate));
+        Bookstore bookstore = new Bookstore(sectionList, deliveryArea, clientSpawnRate, bowSpawnRate);
+        this.threadList.add(bookstore);
+        this.bookstore = bookstore;
         this.setupDone = false;
     }
 

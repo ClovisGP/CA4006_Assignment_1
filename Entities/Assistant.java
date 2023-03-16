@@ -3,6 +3,7 @@ package Entities;
 import java.util.ArrayList;
 import Objects.Book;
 import Objects.Section;
+import Objects.Section.returnType;
 import Objects.Delivery;
 import Tools.Logger;
 import Tools.StatsManager;
@@ -113,9 +114,10 @@ public class Assistant extends SynchronizedThread {
      * @return The target section
      */
     private Section searchCurrentSection(String targetSectionName) {
-        int index = 0;
-        for (; this.sectionList.get(index).getName() == targetSectionName; index++);
-        return sectionList.get(index);
+        for (Section section : this.sectionList) {
+            if (section.getName() == targetSectionName) return section;
+        }
+        return null;
     }
 
     /**
@@ -185,7 +187,9 @@ public class Assistant extends SynchronizedThread {
      */
     private void sectionBehaviour() {
         Section currentSection = searchCurrentSection(this.currentPosition);
-
+        if (currentSection == null) {
+            return;
+        }
         if (currentSection.isFull()) {
             chooseNextDestination(false);
             return;
@@ -196,7 +200,7 @@ public class Assistant extends SynchronizedThread {
             chooseNextDestination(true);
         }
         
-        currentSection.addBook(currentBook);
+        returnType a = currentSection.addBook(currentBook);
         Logger.writeLog("T = " + this.scheduler.getTickNumber() + " | A book has been bought from the " + currentSection.getName() + " section.");
         int count = 1;
         if (assistantTimeInsertBookIntoSection == 0) {
@@ -225,10 +229,11 @@ public class Assistant extends SynchronizedThread {
         if (this.ticksBeforeBreakEnd > 0) {
             this.ticksBeforeBreakEnd = this.ticksBeforeBreakEnd - 1;
             if (this.ticksBeforeBreakEnd == 0) {
-                Logger.writeLog("T = " + this.scheduler.getTickNumber() + " | Assistant ID = " + Thread.currentThread().threadId() + " | An assistant finished his break and returns work.");
+                Logger.writeLog("T = " + this.scheduler.getTickNumber() + " | Assistant ID = " + Thread.currentThread().threadId() + " | An assistant finished his break and returns to work.");
                 lastBreakTaken = this.scheduler.getTickNumber();
             }
         } else {
+            statsManager.assistantIsWorking();
             if ((this.lastBreakTaken + minTimeBeforeBreak) <= this.scheduler.getTickNumber()) {
                 if ((this.lastBreakTaken + maxTimeBeforeBreak) <= this.scheduler.getTickNumber()) {
                     this.ticksBeforeBreakEnd = this.breakTime;

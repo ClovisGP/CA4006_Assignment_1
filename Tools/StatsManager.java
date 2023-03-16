@@ -166,9 +166,24 @@ public class StatsManager extends SynchronizedThread {
         booksSold.set(index, booksSold.get(index) + 1);
     }
 
-    public void numberOfBookWaitingInSection(int booksNumber) {
+    public void booksInSection(int bookNumber) {
         int index = booksWaitingInSection.size() - 1;
-        booksWaitingInSection.set(index, booksWaitingInSection.get(index) + booksNumber);
+        booksWaitingInSection.set(index, booksWaitingInSection.get(index) + bookNumber);
+    }
+
+    public void booksInDelivery(int bookNumber) {
+        int index = booksWaitingDelivery.size() - 1;
+        booksWaitingDelivery.set(index, booksWaitingDelivery.get(index) + bookNumber);
+    }
+
+    public void numberClientWaitingInSection(int clients) {
+        int index = customersWaitingInSection.size() - 1;
+        customersWaitingInSection.set(index, customersWaitingInSection.get(index) + clients);
+    }
+
+    public void assistantIsWorking() {
+        int index = numberOfAssistantWorking.size() - 1;
+        numberOfAssistantWorking.set(index, numberOfAssistantWorking.get(index) + 1);
     }
 
     private String myConcat(String chart1, String chart2) {
@@ -192,11 +207,29 @@ public class StatsManager extends SynchronizedThread {
         if (tickReset - numberOfTicksToAgregate * 50 > 0) {
             min = tickReset - numberOfTicksToAgregate * 50;
         }
-        String chart1 = graph(booksSold, min, max, "Number of book sold.");
-        String chart2 = graph(booksWaitingInSection, min, max, "Books waiting in the sections.");
-        String chart3 = graph(booksSold, min, max, "booksSold 2");
-        String chart4 = graph(booksSold, min, max, "booksSold 3");
-        String chart5 = graph(booksSold, min, max, "booksSold 4");
+
+        ArrayList<Integer> averageBookinWaitingSection = new ArrayList<Integer>();
+        for (Integer d : booksWaitingInSection) {
+            averageBookinWaitingSection.add((int)(d / (double)numberOfTicksToAgregate));
+        }
+        ArrayList<Integer> averageBookInDelivery = new ArrayList<Integer>();
+        for (Integer d : booksWaitingDelivery) {
+            averageBookInDelivery.add((int)(d / (double)numberOfTicksToAgregate));
+        }
+        ArrayList<Integer> averageCustomersWaitingInSection = new ArrayList<Integer>();
+        for (Integer d : customersWaitingInSection) {
+            averageCustomersWaitingInSection.add((int)(d / (double)numberOfTicksToAgregate));
+        }
+        ArrayList<Integer> averageNumberOfAssistantWorking = new ArrayList<Integer>();
+        for (Integer d : numberOfAssistantWorking) {
+            averageNumberOfAssistantWorking.add((int)(d / (double)numberOfTicksToAgregate));
+        }
+
+        String chart1 = graph(booksSold, min, max, "Number of books sold.");
+        String chart2 = graph(averageBookinWaitingSection, min, max, "Number of books waiting in the sections.");
+        String chart3 = graph(averageBookInDelivery, min, max, "Number of books waiting in the delivery area.");
+        String chart4 = graph(averageCustomersWaitingInSection, min, max, "Number of clients waiting.");
+        String chart5 = graph(averageNumberOfAssistantWorking, min, max, "Number of assistants working.");
 
         String res;
         res = myConcat(chart1, chart2);
@@ -209,7 +242,14 @@ public class StatsManager extends SynchronizedThread {
     private void resetStats() {
         while (booksSold.size() > numberOfDataPointsToKeep) booksSold.remove(0);
         booksSold.add(0);
-        
+        while (booksWaitingInSection.size() > numberOfDataPointsToKeep) booksWaitingInSection.remove(0);
+        booksWaitingInSection.add(0);
+        while(booksWaitingDelivery.size() > numberOfDataPointsToKeep) booksWaitingDelivery.remove(0);
+        booksWaitingDelivery.add(0);
+        while(customersWaitingInSection.size() > numberOfDataPointsToKeep) customersWaitingInSection.remove(0);
+        customersWaitingInSection.add(0);
+        while(numberOfAssistantWorking.size() > numberOfDataPointsToKeep) numberOfAssistantWorking.remove(0);
+        numberOfAssistantWorking.add(0);
     }
 
     public void doWork() {
