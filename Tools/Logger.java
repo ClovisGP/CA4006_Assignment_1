@@ -25,11 +25,8 @@ public class Logger {
             } else {
                 checkFile.createNewFile();
             }
-
-
-
         } catch (IOException e) {
-            System.out.println("An error occurred during in the logger => " + e);
+            //System.out.println("An error occurred in the logger => " + e);
         }
     }
 
@@ -44,7 +41,7 @@ public class Logger {
             logFile.append(msg + "\n");
             logFile.close();
         } catch (IOException e) {
-            System.out.println("An error occurred during in the logger => " + e);
+            //System.out.println("An error occurred in the logger => " + e);
         }
     }
 }

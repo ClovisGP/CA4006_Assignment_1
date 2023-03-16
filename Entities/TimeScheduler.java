@@ -77,7 +77,7 @@ public class TimeScheduler extends Thread {
                 TimeUnit.MILLISECONDS.sleep(this.tickMilliLength);
             }
         } catch (Exception e) {
-            System.out.println(e);
+            //System.out.println(e);
         }
     }
 
