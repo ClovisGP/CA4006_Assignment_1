@@ -68,6 +68,7 @@ public class TimeScheduler extends Thread {
                 this.statsManager.booksInSection(this.bookstore.getbooksInSection());
                 this.statsManager.booksInDelivery(this.bookstore.getBooksInDelivery());
                 this.statsManager.numberClientWaitingInSection(this.bookstore.getNumberClientsWaiting());
+                this.statsManager.showStats();
                 // synchronisation
                 this.barrier.await();
                 this.ticks++;
