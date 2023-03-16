@@ -19,7 +19,7 @@ public class StatsManager extends SynchronizedThread {
     private ArrayList<Integer> numberOfAssistantWorking = new ArrayList<Integer>(Arrays.asList(0));
     private String command = "";
     private int tickReset = 0;
-    private int numberOfTicksToAgregate = 10;
+    private int numberOfTicksToAgregate = 1;
     private int numberOfDataPointsToKeep = 50;
 
     private StatsManager() {}

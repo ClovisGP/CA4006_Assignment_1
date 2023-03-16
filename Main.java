@@ -21,7 +21,7 @@ public class Main {
         System.out.println("        -sg number: The number of section to generate (the names won't be pretty however....). No default value. Must be more than 0.");
         System.out.println("    Ticks:");
         System.out.println("        -tv number: The minimum time a tick must take in milliseconds.");
-        System.out.println("            default: -tv 10");
+        System.out.println("            default: -tv 100");
         System.out.println("    Clients:");
         System.out.println("        -csr number: The average number of tick a client will take to spawn.");
         System.out.println("            default: -csr 10");
@@ -61,7 +61,7 @@ public class Main {
         int startingNumberBooksSection = 1;
         int generateSection = 0;
 
-        int tickTimeValue = 10;
+        int tickTimeValue = 100;
 
         int clientSpawnRate = 10;
 

@@ -5,7 +5,7 @@ COMPIL =	javac
 
 EXEC =		java
 
-EXEDIR =	./build
+EXEDIR =	build
 
 SRC =		./*.java			\
 			./Entities/*.java	\
@@ -24,4 +24,5 @@ run:
 	$(EXEC) -cp $(EXEDIR) Main $(ARG)
 
 clean :
-	rm -f *.class $(EXEDIR)
+	rm output.dat
+	rm -r $(EXEDIR)
